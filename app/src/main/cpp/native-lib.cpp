@@ -134,6 +134,6 @@ extern "C" {
     JNIEXPORT void JNICALL
     Java_com_cxp_learningvideo_FFEncodeActivity_releaseEncoder(JNIEnv *env, jobject thiz, jint synthesizer) {
         Synthesizer *s =  (Synthesizer *)synthesizer;
-        delete synthesizer;
+        delete s;
     }
 }
