@@ -10,7 +10,6 @@ import com.cxp.learningvideo.media.muxer.MP4Repack
 import kotlinx.android.synthetic.main.activity_simple_player.*
 import java.util.concurrent.Executors
 
-
 /**
  * 简单播放器页面
  *
@@ -20,19 +19,20 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-12 09:33
  *
  */
-class SimplePlayerActivity: AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+class SimplePlayerActivity : AppCompatActivity() {
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
     lateinit var videoDecoder: VideoDecoder
     lateinit var audioDecoder: AudioDecoder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_player)
+
         initPlayer()
     }
 
     private fun initPlayer() {
-        val threadPool = Executors.newFixedThreadPool(10)
+        val threadPool = Executors.newFixedThreadPool(10)//创建一个线程池
 
         videoDecoder = VideoDecoder(path, sfv, null)
         threadPool.execute(videoDecoder)

@@ -12,9 +12,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         requestPermission()
     }
 
+    //请求设备存储访问权限
     private fun requestPermission() {
         val permissions = Permission.Group.STORAGE
         AndPermission.with(this)
