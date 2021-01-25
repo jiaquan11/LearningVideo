@@ -4,7 +4,6 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import java.nio.ByteBuffer
 
-
 /**
  * 音视频分离器
  *
@@ -14,9 +13,7 @@ import java.nio.ByteBuffer
  * @Datetime 2019-09-03
  *
  */
-
 class MMExtractor(path: String?) {
-
     /**音视频分离器*/
     private var mExtractor: MediaExtractor? = null
 
@@ -132,7 +129,7 @@ class MMExtractor(path: String?) {
     }
 
     /**
-     * 获取当前帧时间
+     * 获取当前帧时间  解复用的时间戳 packet pts
      */
     fun getCurrentTimestamp(): Long {
         return mCurSampleTime

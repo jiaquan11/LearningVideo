@@ -5,7 +5,6 @@ import com.chenlittleping.videoeditor.decoder.MMExtractor
 import com.cxp.learningvideo.media.IExtractor
 import java.nio.ByteBuffer
 
-
 /**
  * 音频数据提取器
  *
@@ -15,8 +14,7 @@ import java.nio.ByteBuffer
  * @Datetime 2019-09-03 11:05
  *
  */
-class AudioExtractor(path: String): IExtractor {
-
+class AudioExtractor(path: String) : IExtractor {
     private val mMediaExtractor = MMExtractor(path)
 
     override fun getFormat(): MediaFormat? {

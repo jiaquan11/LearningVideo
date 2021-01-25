@@ -3,7 +3,6 @@ package com.cxp.learningvideo.media
 import android.media.MediaFormat
 import java.nio.ByteBuffer
 
-
 /**
  * 音视频分离器定义
  *
@@ -14,7 +13,6 @@ import java.nio.ByteBuffer
  *
  */
 interface IExtractor {
-
     fun getFormat(): MediaFormat?
 
     /**

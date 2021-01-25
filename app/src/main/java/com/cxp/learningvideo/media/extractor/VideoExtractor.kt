@@ -16,7 +16,6 @@ import java.nio.ByteBuffer
  *
  */
 class VideoExtractor(path: String): IExtractor {
-
     private val mMediaExtractor = MMExtractor(path)
 
     override fun getFormat(): MediaFormat? {

@@ -40,6 +40,7 @@ class AudioDecoder(path: String): BaseDecoder(path) {
         return AudioExtractor(path)
     }
 
+    //获取音频extractor参数，用于配置音频播放AudioTrack使用
     override fun initSpecParams(format: MediaFormat) {
         try {
             mChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)

@@ -120,6 +120,7 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
                     break
                 }
 
+                //记录系统当前时间戳，用于音视频同步
                 if (mStartTimeForSync == -1L) {
                     mStartTimeForSync = System.currentTimeMillis()
                 }
@@ -274,7 +275,7 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
 
     private fun sleepRender() {
         val passTime = System.currentTimeMillis() - mStartTimeForSync
-        val curTime = getCurTimeStamp()
+        val curTime = getCurTimeStamp()//当前帧解码时间戳
         if (curTime > passTime) {
             Thread.sleep(curTime - passTime)
         }
@@ -375,6 +376,7 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
         return mDuration
     }
 
+    //解码时间戳
     override fun getCurTimeStamp(): Long {
         return mBufferInfo.presentationTimeUs / 1000
     }
