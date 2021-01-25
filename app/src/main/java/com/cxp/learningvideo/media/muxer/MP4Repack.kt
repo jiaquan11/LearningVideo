@@ -6,7 +6,6 @@ import com.cxp.learningvideo.media.extractor.AudioExtractor
 import com.cxp.learningvideo.media.extractor.VideoExtractor
 import java.nio.ByteBuffer
 
-
 /**
  * MP4重打包工具
  *
@@ -17,9 +16,7 @@ import java.nio.ByteBuffer
  *
  */
 class MP4Repack(path: String) {
-
     private val TAG = "MP4Repack"
-
     private val mAExtractor: AudioExtractor = AudioExtractor(path)
     private val mVExtractor: VideoExtractor = VideoExtractor(path)
     private val mMuxer: MMuxer = MMuxer()
@@ -45,7 +42,12 @@ class MP4Repack(path: String) {
             if (audioFormat != null) {
                 var size = mAExtractor.readBuffer(buffer)
                 while (size > 0) {
-                    bufferInfo.set(0, size, mAExtractor.getCurrentTimestamp(), mAExtractor.getSampleFlag())
+                    bufferInfo.set(
+                        0,
+                        size,
+                        mAExtractor.getCurrentTimestamp(),
+                        mAExtractor.getSampleFlag()
+                    )
                     mMuxer.writeAudioData(buffer, bufferInfo)
                     size = mAExtractor.readBuffer(buffer)
                 }
@@ -53,7 +55,12 @@ class MP4Repack(path: String) {
             if (videoFormat != null) {
                 var size = mVExtractor.readBuffer(buffer)
                 while (size > 0) {
-                    bufferInfo.set(0, size, mVExtractor.getCurrentTimestamp(), mVExtractor.getSampleFlag())
+                    bufferInfo.set(
+                        0,
+                        size,
+                        mVExtractor.getCurrentTimestamp(),
+                        mVExtractor.getSampleFlag()
+                    )
                     mMuxer.writeVideoData(buffer, bufferInfo)
                     size = mVExtractor.readBuffer(buffer)
                 }

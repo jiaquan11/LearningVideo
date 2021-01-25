@@ -6,7 +6,8 @@ import android.media.MediaMuxer
 import android.os.Environment
 import android.util.Log
 import java.nio.ByteBuffer
-
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 音视频封装器
@@ -18,7 +19,6 @@ import java.nio.ByteBuffer
  *
  */
 class MMuxer {
-
     private val TAG = "MMuxer"
 
     private var mPath: String
@@ -36,10 +36,11 @@ class MMuxer {
 
     private var mIsStart = false
 
-    private var mStateListener: IMuxerStateListener?  = null
+    private var mStateListener: IMuxerStateListener? = null
 
     init {
-        val fileName = "LVideo_Test" + /*SimpleDateFormat("yyyyMM_dd-HHmmss").format(Date()) +*/ ".mp4"
+        val fileName =
+            "LVideo_Test" + SimpleDateFormat("yyyyMM_dd-HHmmss").format(Date()) + ".mp4"
         val filePath = Environment.getExternalStorageDirectory().absolutePath.toString() + "/"
         mPath = filePath + fileName
         mMediaMuxer = MediaMuxer(mPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
