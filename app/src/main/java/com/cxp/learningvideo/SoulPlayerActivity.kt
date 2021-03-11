@@ -22,7 +22,7 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-26 21:07
  *
  */
-class SoulPlayerActivity: AppCompatActivity() {
+class SoulPlayerActivity : AppCompatActivity() {
     val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
     lateinit var drawer: IDrawer
 

@@ -5,7 +5,6 @@ import android.opengl.*
 import android.util.Log
 import android.view.Surface
 
-
 /**
  * EGL基础封装
  *
@@ -24,7 +23,6 @@ const val FLAG_RECORDABLE = 0x01
 const val EGL_RECORDABLE_ANDROID = 0x3142
 
 class EGLCore {
-
     private val TAG = "EGLCore"
 
     // EGL相关变量

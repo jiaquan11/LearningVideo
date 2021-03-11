@@ -15,7 +15,7 @@ import android.content.Context
 @SuppressLint("StaticFieldLeak")
 var CONTEXT: Context? = null
 
-class MainApp: Application() {
+class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
         CONTEXT = this

@@ -2,7 +2,6 @@ package com.cxp.learningvideo.opengl.drawer
 
 import android.graphics.SurfaceTexture
 
-
 /**
  * 渲染器
  *

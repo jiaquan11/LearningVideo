@@ -12,7 +12,6 @@ import com.cxp.learningvideo.opengl.drawer.VideoDrawer
 import kotlinx.android.synthetic.main.activity_opengl_player.*
 import java.util.concurrent.Executors
 
-
 /**
  * 使用OpenGL渲染的播放器
  *
@@ -22,8 +21,8 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-26 21:07
  *
  */
-class OpenGLPlayerActivity: AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+class OpenGLPlayerActivity : AppCompatActivity() {
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
     lateinit var drawer: IDrawer
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import com.cxp.learningvideo.opengl.drawer.VideoDrawer
 
-
 /**
  * 自定义GLSurfaceView
  *
@@ -15,10 +14,9 @@ import com.cxp.learningvideo.opengl.drawer.VideoDrawer
  *
  */
 class DefGLSurfaceView : GLSurfaceView {
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context): super(context)
-
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     private var mPrePoint = PointF()
 

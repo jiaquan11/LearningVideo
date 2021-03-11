@@ -7,7 +7,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
-
 /**
  * 三角形绘制
  *
@@ -17,8 +16,7 @@ import java.nio.FloatBuffer
  * @Datetime 2019-10-09 09:08
  *
  */
-class BitmapDrawer(private val mBitmap: Bitmap): IDrawer {
-
+class BitmapDrawer(private val mBitmap: Bitmap) : IDrawer {
     // 顶点坐标
     private val mVertexCoors = floatArrayOf(
         -1f, -1f,
@@ -42,8 +40,10 @@ class BitmapDrawer(private val mBitmap: Bitmap): IDrawer {
 
     // 顶点坐标接收者
     private var mVertexPosHandler: Int = -1
+
     // 纹理坐标接收者
     private var mTexturePosHandler: Int = -1
+
     // 纹理接收者
     private var mTextureHandler: Int = -1
 
@@ -128,10 +128,26 @@ class BitmapDrawer(private val mBitmap: Bitmap): IDrawer {
         //将激活的纹理单元传递到着色器里面
         GLES20.glUniform1i(mTextureHandler, 0)
         //配置边缘过渡参数
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameterf(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MIN_FILTER,
+            GLES20.GL_LINEAR.toFloat()
+        )
+        GLES20.glTexParameterf(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MAG_FILTER,
+            GLES20.GL_LINEAR.toFloat()
+        )
+        GLES20.glTexParameteri(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_WRAP_S,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
+        GLES20.glTexParameteri(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_WRAP_T,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
     }
 
     private fun bindBitmapToTexture() {
@@ -147,7 +163,14 @@ class BitmapDrawer(private val mBitmap: Bitmap): IDrawer {
         GLES20.glEnableVertexAttribArray(mTexturePosHandler)
         //设置着色器参数， 第二个参数表示一个顶点包含的数据数量，这里为xy，所以为2
         GLES20.glVertexAttribPointer(mVertexPosHandler, 2, GLES20.GL_FLOAT, false, 0, mVertexBuffer)
-        GLES20.glVertexAttribPointer(mTexturePosHandler, 2, GLES20.GL_FLOAT, false, 0, mTextureBuffer)
+        GLES20.glVertexAttribPointer(
+            mTexturePosHandler,
+            2,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            mTextureBuffer
+        )
         //开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
     }

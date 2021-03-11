@@ -9,7 +9,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_ffmpeg_info.*
 import java.io.File
 
-
 /**
  * FFmpeg测试页面
  *
@@ -18,8 +17,7 @@ import java.io.File
  * @version LearningVideo
  *
  */
-class FFmpegActivity: AppCompatActivity() {
-
+class FFmpegActivity : AppCompatActivity() {
     val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 
     private var player: Int? = null
@@ -34,8 +32,12 @@ class FFmpegActivity: AppCompatActivity() {
     private fun initSfv() {
         if (File(path).exists()) {
             sfv.holder.addCallback(object : SurfaceHolder.Callback {
-                override fun surfaceChanged(holder: SurfaceHolder, format: Int,
-                                            width: Int, height: Int) {}
+                override fun surfaceChanged(
+                    holder: SurfaceHolder, format: Int,
+                    width: Int, height: Int
+                ) {
+                }
+
                 override fun surfaceDestroyed(holder: SurfaceHolder) {}
 
                 override fun surfaceCreated(holder: SurfaceHolder) {

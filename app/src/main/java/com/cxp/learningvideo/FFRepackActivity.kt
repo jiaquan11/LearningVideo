@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlin.concurrent.thread
 
-
 /**
  * FFmpeg 音视频重打包
  *
@@ -16,12 +15,12 @@ import kotlin.concurrent.thread
  * @Datetime 2020-08-02 14:27
  *
  */
-class FFRepackActivity: AppCompatActivity() {
-
+class FFRepackActivity : AppCompatActivity() {
     private var ffRepack: Int = 0
 
     private val srcPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
-    private val destPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_repack.mp4"
+    private val destPath =
+        Environment.getExternalStorageDirectory().absolutePath + "/mvtest_repack.mp4"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

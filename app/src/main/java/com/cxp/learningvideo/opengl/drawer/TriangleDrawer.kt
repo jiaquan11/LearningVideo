@@ -5,7 +5,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
-
 /**
  * 三角形绘制
  *
@@ -15,13 +14,13 @@ import java.nio.FloatBuffer
  * @Datetime 2019-10-09 09:08
  *
  */
-class TriangleDrawer: IDrawer {
+class TriangleDrawer : IDrawer {
     override fun setVideoSize(videoW: Int, videoH: Int) {
-        
+
     }
 
     override fun setWorldSize(worldW: Int, worldH: Int) {
-        
+
     }
 
     // 顶点坐标
@@ -46,6 +45,7 @@ class TriangleDrawer: IDrawer {
 
     // 顶点坐标接收者
     private var mVertexPosHandler: Int = -1
+
     // 纹理坐标接收者
     private var mTexturePosHandler: Int = -1
 
@@ -115,7 +115,14 @@ class TriangleDrawer: IDrawer {
         GLES20.glEnableVertexAttribArray(mTexturePosHandler)
         //设置着色器参数， 第二个参数表示一个顶点包含的数据数量，这里为xy，所以为2
         GLES20.glVertexAttribPointer(mVertexPosHandler, 2, GLES20.GL_FLOAT, false, 0, mVertexBuffer)
-        GLES20.glVertexAttribPointer(mTexturePosHandler, 2, GLES20.GL_FLOAT, false, 0, mTextureBuffer)
+        GLES20.glVertexAttribPointer(
+            mTexturePosHandler,
+            2,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            mTextureBuffer
+        )
         //开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 3)
     }

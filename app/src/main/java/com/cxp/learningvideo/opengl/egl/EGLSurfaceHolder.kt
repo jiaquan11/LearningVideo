@@ -3,7 +3,6 @@ package com.cxp.learningvideo.opengl.egl
 import android.opengl.EGLContext
 import android.opengl.EGLSurface
 
-
 /**
  * EGLSurface 持有者
  *
@@ -14,7 +13,6 @@ import android.opengl.EGLSurface
  *
  */
 class EGLSurfaceHolder {
-
     private val TAG = "EGLSurfaceHolder"
 
     private lateinit var mEGLCore: EGLCore

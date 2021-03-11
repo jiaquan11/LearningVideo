@@ -63,16 +63,20 @@ class SoulVideoDrawer : IDrawer {
 
     //矩阵变换接收者
     private var mVertexMatrixHandler: Int = -1
+
     // 顶点坐标接收者
     private var mVertexPosHandler: Int = -1
+
     // 纹理坐标接收者
     private var mTexturePosHandler: Int = -1
+
     // 纹理接收者
     private var mTextureHandler: Int = -1
+
     // 半透值接收者
     private var mAlphaHandler: Int = -1
 
-//-------------灵魂出窍相关的变量--------------
+    //-------------灵魂出窍相关的变量--------------
     // 灵魂帧缓冲
     private var mSoulFrameBuffer: Int = -1
 
@@ -127,7 +131,8 @@ class SoulVideoDrawer : IDrawer {
     private fun initDefMatrix() {
         if (mMatrix != null) return
         if (mVideoWidth != -1 && mVideoHeight != -1 &&
-            mWorldWidth != -1 && mWorldHeight != -1) {
+            mWorldWidth != -1 && mWorldHeight != -1
+        ) {
             mMatrix = FloatArray(16)
             var prjMatrix = FloatArray(16)
             val originRatio = mVideoWidth / mVideoHeight.toFloat()
@@ -343,11 +348,18 @@ class SoulVideoDrawer : IDrawer {
         GLES20.glEnableVertexAttribArray(mVertexPosHandler)
         GLES20.glEnableVertexAttribArray(mTexturePosHandler)
         GLES20.glUniformMatrix4fv(mVertexMatrixHandler, 1, false, mMatrix, 0)
-        GLES20.glUniform1f(mProgressHandler, (System.currentTimeMillis() - mModifyTime)/500f)
+        GLES20.glUniform1f(mProgressHandler, (System.currentTimeMillis() - mModifyTime) / 500f)
         GLES20.glUniform1i(mDrawFobHandler, mDrawFbo)
         //设置着色器参数， 第二个参数表示一个顶点包含的数据数量，这里为xy，所以为2
         GLES20.glVertexAttribPointer(mVertexPosHandler, 2, GLES20.GL_FLOAT, false, 0, mVertexBuffer)
-        GLES20.glVertexAttribPointer(mTexturePosHandler, 2, GLES20.GL_FLOAT, false, 0, mTextureBuffer)
+        GLES20.glVertexAttribPointer(
+            mTexturePosHandler,
+            2,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            mTextureBuffer
+        )
         GLES20.glVertexAttrib1f(mAlphaHandler, mAlpha)
         //开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
@@ -397,27 +409,27 @@ class SoulVideoDrawer : IDrawer {
                 "uniform int drawFbo;" +
                 "uniform sampler2D uSoulTexture;" +
                 "void main() {" +
-                    // 透明度[0,0.4]
-                    "float alpha = 0.6 * (1.0 - progress);" +
-                    // 缩放比例[1.0,1.8]
-                    "float scale = 1.0 + (1.5 - 1.0) * progress;" +
+                // 透明度[0,0.4]
+                "float alpha = 0.6 * (1.0 - progress);" +
+                // 缩放比例[1.0,1.8]
+                "float scale = 1.0 + (1.5 - 1.0) * progress;" +
 
-                    // 放大纹理坐标
-                    // 根据放大比例，得到放大纹理坐标 [0,0],[0,1],[1,1],[1,0]
-                    "float soulX = 0.5 + (vCoordinate.x - 0.5) / scale;\n" +
-                    "float soulY = 0.5 + (vCoordinate.y - 0.5) / scale;\n" +
-                    "vec2 soulTextureCoords = vec2(soulX, soulY);" +
-                    // 获取对应放大纹理坐标下的纹素(颜色值rgba)
-                    "vec4 soulMask = texture2D(uSoulTexture, soulTextureCoords);" +
+                // 放大纹理坐标
+                // 根据放大比例，得到放大纹理坐标 [0,0],[0,1],[1,1],[1,0]
+                "float soulX = 0.5 + (vCoordinate.x - 0.5) / scale;\n" +
+                "float soulY = 0.5 + (vCoordinate.y - 0.5) / scale;\n" +
+                "vec2 soulTextureCoords = vec2(soulX, soulY);" +
+                // 获取对应放大纹理坐标下的纹素(颜色值rgba)
+                "vec4 soulMask = texture2D(uSoulTexture, soulTextureCoords);" +
 
-                    "vec4 color = texture2D(uTexture, vCoordinate);" +
+                "vec4 color = texture2D(uTexture, vCoordinate);" +
 
-                    "if (drawFbo == 0) {" +
-                        // 颜色混合 默认颜色混合方程式 = mask * (1.0-alpha) + weakMask * alpha
-                    "    gl_FragColor = color * (1.0 - alpha) + soulMask * alpha;" +
-                    "} else {" +
-                    "   gl_FragColor = vec4(color.r, color.g, color.b, inAlpha);" +
-                    "}" +
+                "if (drawFbo == 0) {" +
+                // 颜色混合 默认颜色混合方程式 = mask * (1.0-alpha) + weakMask * alpha
+                "    gl_FragColor = color * (1.0 - alpha) + soulMask * alpha;" +
+                "} else {" +
+                "   gl_FragColor = vec4(color.r, color.g, color.b, inAlpha);" +
+                "}" +
                 "}"
     }
 
@@ -432,7 +444,7 @@ class SoulVideoDrawer : IDrawer {
     }
 
     fun translate(dx: Float, dy: Float) {
-        Matrix.translateM(mMatrix, 0, dx*mWidthRatio*2, -dy*mHeightRatio*2, 0f)
+        Matrix.translateM(mMatrix, 0, dx * mWidthRatio * 2, -dy * mHeightRatio * 2, 0f)
     }
 
     fun scale(sx: Float, sy: Float) {

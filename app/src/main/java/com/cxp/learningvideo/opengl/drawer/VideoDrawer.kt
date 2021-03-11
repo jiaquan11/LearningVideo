@@ -8,7 +8,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
-
 /**
  * 视频渲染器
  *
@@ -19,7 +18,6 @@ import java.nio.FloatBuffer
  *
  */
 class VideoDrawer : IDrawer {
-
     // 顶点坐标
     private val mVertexCoors = floatArrayOf(
         -1f, -1f,
@@ -52,12 +50,16 @@ class VideoDrawer : IDrawer {
 
     //矩阵变换接收者
     private var mVertexMatrixHandler: Int = -1
+
     // 顶点坐标接收者
     private var mVertexPosHandler: Int = -1
+
     // 纹理坐标接收者
     private var mTexturePosHandler: Int = -1
+
     // 纹理接收者
     private var mTextureHandler: Int = -1
+
     // 半透值接收者
     private var mAlphaHandler: Int = -1
 
@@ -93,7 +95,8 @@ class VideoDrawer : IDrawer {
     private fun initDefMatrix() {
         if (mMatrix != null) return
         if (mVideoWidth != -1 && mVideoHeight != -1 &&
-            mWorldWidth != -1 && mWorldHeight != -1) {
+            mWorldWidth != -1 && mWorldHeight != -1
+        ) {
             mMatrix = FloatArray(16)
             var prjMatrix = FloatArray(16)
             val originRatio = mVideoWidth / mVideoHeight.toFloat()
@@ -219,10 +222,26 @@ class VideoDrawer : IDrawer {
         //将激活的纹理单元传递到着色器里面
         GLES20.glUniform1i(mTextureHandler, 0)
         //配置边缘过渡参数
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameterf(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_MIN_FILTER,
+            GLES20.GL_LINEAR.toFloat()
+        )
+        GLES20.glTexParameterf(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_MAG_FILTER,
+            GLES20.GL_LINEAR.toFloat()
+        )
+        GLES20.glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_WRAP_S,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
+        GLES20.glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_WRAP_T,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
     }
 
     private fun updateTexture() {
@@ -236,7 +255,14 @@ class VideoDrawer : IDrawer {
         GLES20.glUniformMatrix4fv(mVertexMatrixHandler, 1, false, mMatrix, 0)
         //设置着色器参数， 第二个参数表示一个顶点包含的数据数量，这里为xy，所以为2
         GLES20.glVertexAttribPointer(mVertexPosHandler, 2, GLES20.GL_FLOAT, false, 0, mVertexBuffer)
-        GLES20.glVertexAttribPointer(mTexturePosHandler, 2, GLES20.GL_FLOAT, false, 0, mTextureBuffer)
+        GLES20.glVertexAttribPointer(
+            mTexturePosHandler,
+            2,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            mTextureBuffer
+        )
         GLES20.glVertexAttrib1f(mAlphaHandler, mAlpha)
         //开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
@@ -289,7 +315,7 @@ class VideoDrawer : IDrawer {
     }
 
     fun translate(dx: Float, dy: Float) {
-        Matrix.translateM(mMatrix, 0, dx*mWidthRatio*2, -dy*mHeightRatio*2, 0f)
+        Matrix.translateM(mMatrix, 0, dx * mWidthRatio * 2, -dy * mHeightRatio * 2, 0f)
     }
 
     fun scale(sx: Float, sy: Float) {

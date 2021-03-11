@@ -30,7 +30,7 @@ import java.util.concurrent.Executors
  * @version LearningVideo
  *
  */
-class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
+class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
 
     private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 

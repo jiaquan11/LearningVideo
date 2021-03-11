@@ -15,7 +15,6 @@ import com.cxp.learningvideo.opengl.egl.CustomerGLRenderer
 import kotlinx.android.synthetic.main.activity_egl_player.*
 import java.util.concurrent.Executors
 
-
 /**
  * 使用自定义的OpenGL（EGL+Thread）渲染器，渲染多个视频画面的播放器
  *
@@ -25,7 +24,7 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-26 21:07
  *
  */
-class EGLPlayerActivity: AppCompatActivity() {
+class EGLPlayerActivity : AppCompatActivity() {
     private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_2.mp4"
     private val path2 = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 

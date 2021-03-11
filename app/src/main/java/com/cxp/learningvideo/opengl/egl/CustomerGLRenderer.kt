@@ -9,7 +9,6 @@ import com.cxp.learningvideo.opengl.OpenGLTools
 import com.cxp.learningvideo.opengl.drawer.IDrawer
 import java.lang.ref.WeakReference
 
-
 /**
  * 自定义的OpenGL渲染器
  *
@@ -21,7 +20,6 @@ import java.lang.ref.WeakReference
  *
  */
 class CustomerGLRenderer : SurfaceHolder.Callback {
-
     private val mThread = RenderThread()
 
     private var mSurfaceView: WeakReference<SurfaceView>? = null
