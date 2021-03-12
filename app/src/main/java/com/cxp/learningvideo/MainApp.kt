@@ -15,6 +15,7 @@ import android.content.Context
 @SuppressLint("StaticFieldLeak")
 var CONTEXT: Context? = null
 
+//得到应用程序对象的上下文
 class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()

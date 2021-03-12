@@ -5,7 +5,6 @@ import com.chenlittleping.videoeditor.decoder.MMExtractor
 import com.cxp.learningvideo.media.IExtractor
 import java.nio.ByteBuffer
 
-
 /**
  * 视频数据提取器
  *

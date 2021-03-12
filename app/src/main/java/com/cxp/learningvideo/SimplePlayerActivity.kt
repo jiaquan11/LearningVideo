@@ -40,10 +40,16 @@ class SimplePlayerActivity : AppCompatActivity() {
         audioDecoder = AudioDecoder(path)
         threadPool.execute(audioDecoder)
 
+        /**
+         * 音频线程和视频线程各自在独立地解封装，解码和播放
+         */
         videoDecoder.goOn()
         audioDecoder.goOn()
     }
 
+    /*
+    * 将视频文件音视频数据解封装又重新封装写入到文件中
+    * */
     fun clickRepack(view: View) {
         repack()
     }
