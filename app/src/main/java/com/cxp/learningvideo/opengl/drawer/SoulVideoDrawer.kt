@@ -10,7 +10,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
-
 /**
  * 灵魂出窍视频渲染器
  *
@@ -104,7 +103,7 @@ class SoulVideoDrawer : IDrawer {
 
     private var mMatrix: FloatArray? = null
 
-    private var mAlpha = 1f
+    private var mAlpha = 1f  //1 表示不透明   0 表示完全透明
 
     init {
         //【步骤1: 初始化顶点坐标】
@@ -130,8 +129,8 @@ class SoulVideoDrawer : IDrawer {
     private var mHeightRatio = 1f
     private fun initDefMatrix() {
         if (mMatrix != null) return
-        if (mVideoWidth != -1 && mVideoHeight != -1 &&
-            mWorldWidth != -1 && mWorldHeight != -1
+        if ((mVideoWidth != -1) && (mVideoHeight != -1) &&
+            (mWorldWidth != -1) && (mWorldHeight != -1)
         ) {
             mMatrix = FloatArray(16)
             var prjMatrix = FloatArray(16)
@@ -214,17 +213,25 @@ class SoulVideoDrawer : IDrawer {
 
     override fun draw() {
         if (mTextureId != -1) {
-            initDefMatrix()
+            initDefMatrix()//正交投影矩阵设置
             //【步骤2: 创建、编译并启动OpenGL着色器】
             createGLPrg()
+
             // 【更新FBO】
-            updateFBO()
-            // 【激活灵魂纹理单元】
+            updateFBO()//先绘制到FBO中，然后后面再渲染到最终输出的纹理中
+
+            /*上面updateFBO()已经将原始图像绘制到了FBO中，下面同时激活了
+            FBO的输出渲染纹理和原始图像纹理，就是用于二者图像混合
+             */
+            // 【激活灵魂纹理单元】(激活最终输出的渲染纹理)
             activateSoulTexture()
+
             //【步骤3: 激活并绑定纹理单元】
             activateDefTexture()
+
             //【步骤4: 绑定图片到纹理单元】
             updateTexture()
+
             //【步骤5: 开始渲染绘制】
             doDraw()
         }
@@ -244,11 +251,11 @@ class SoulVideoDrawer : IDrawer {
             //连接到着色器程序
             GLES20.glLinkProgram(mProgram)
 
-            mVertexMatrixHandler = GLES20.glGetUniformLocation(mProgram, "uMatrix")
-            mVertexPosHandler = GLES20.glGetAttribLocation(mProgram, "aPosition")
-            mTextureHandler = GLES20.glGetUniformLocation(mProgram, "uTexture")
-            mTexturePosHandler = GLES20.glGetAttribLocation(mProgram, "aCoordinate")
-            mAlphaHandler = GLES20.glGetAttribLocation(mProgram, "alpha")
+            mVertexMatrixHandler = GLES20.glGetUniformLocation(mProgram, "uMatrix")//矩阵信息
+            mVertexPosHandler = GLES20.glGetAttribLocation(mProgram, "aPosition")//顶点坐标
+            mTextureHandler = GLES20.glGetUniformLocation(mProgram, "uTexture")//给到硬解的纹理
+            mTexturePosHandler = GLES20.glGetAttribLocation(mProgram, "aCoordinate")//纹理坐标
+            mAlphaHandler = GLES20.glGetAttribLocation(mProgram, "alpha")//透明度
 
             mSoulTextureHandler = GLES20.glGetUniformLocation(mProgram, "uSoulTexture")
             mProgressHandler = GLES20.glGetUniformLocation(mProgram, "progress")
@@ -259,27 +266,35 @@ class SoulVideoDrawer : IDrawer {
     }
 
     private fun updateFBO() {
+        //只创建一次即可
         if (mSoulTextureId == -1) {
-            // 创建FBO纹理
+            // 创建FBO输出纹理id，用于最终渲染输出 并分配了FBO的内存
             mSoulTextureId = OpenGLTools.createFBOTexture(mVideoWidth, mVideoHeight)
         }
-        if (mSoulFrameBuffer == -1) {
+        if (mSoulFrameBuffer == -1) {//创建FBO framebuffer id
             mSoulFrameBuffer = OpenGLTools.createFrameBuffer()
         }
-        if (System.currentTimeMillis() - mModifyTime > 500) {
+
+        //这里应该是需要进行FBO中的渲染
+        if (System.currentTimeMillis() - mModifyTime > 500) {//500ms处理渲染一次
             mModifyTime = System.currentTimeMillis()
-            // 绑定FBO
+            // 绑定FBO 绑定framebufferid 并将最终输出渲染的纹理id也绑定到FBO中
             OpenGLTools.bindFBO(mSoulFrameBuffer, mSoulTextureId)
             // 配置FBO窗口
             configFboViewport()
-            // 激活默认的纹理
+
+            // 激活默认的纹理(给到硬解的纹理)
             activateDefTexture()
             // 更新纹理
             updateTexture()
+
+            //上面激活了给到硬解的纹理，是将原始图像首先绘制到FBO中
             // 绘制到FBO
             doDraw()
+
             // 解绑FBO
             OpenGLTools.unbindFBO()
+
             // 恢复默认绘制窗口
             configDefViewport()
         }
@@ -422,12 +437,13 @@ class SoulVideoDrawer : IDrawer {
                 // 获取对应放大纹理坐标下的纹素(颜色值rgba)
                 "vec4 soulMask = texture2D(uSoulTexture, soulTextureCoords);" +
 
+                //原始图像颜色像素
                 "vec4 color = texture2D(uTexture, vCoordinate);" +
 
-                "if (drawFbo == 0) {" +
-                // 颜色混合 默认颜色混合方程式 = mask * (1.0-alpha) + weakMask * alpha
+                "if (drawFbo == 0) {" +//最终渲染到屏幕上时，需要两个图像颜色混合，达到灵魂出窍效果
+                // 颜色混合 默认颜色混合方程式 = mask * (1.0-alpha) + weakMask * alpha  原始图像颜色像素跟放大后的图像混合
                 "    gl_FragColor = color * (1.0 - alpha) + soulMask * alpha;" +
-                "} else {" +
+                "} else {" +//在FBO中渲染，不需要透明，直接原始图像渲染
                 "   gl_FragColor = vec4(color.r, color.g, color.b, inAlpha);" +
                 "}" +
                 "}"

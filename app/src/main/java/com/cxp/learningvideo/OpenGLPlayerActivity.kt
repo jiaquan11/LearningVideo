@@ -37,6 +37,7 @@ class OpenGLPlayerActivity : AppCompatActivity() {
         drawer.getSurfaceTexture {
             initPlayer(Surface(it))
         }
+
         gl_surface.setEGLContextClientVersion(2)
         val render = SimpleRender()
         render.addDrawer(drawer)

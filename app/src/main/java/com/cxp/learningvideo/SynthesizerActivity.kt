@@ -21,7 +21,6 @@ import com.cxp.learningvideo.opengl.egl.CustomerGLRenderer
 import kotlinx.android.synthetic.main.activity_synthesizer.*
 import java.util.concurrent.Executors
 
-
 /**
  * 合成器页面
  *
@@ -31,8 +30,7 @@ import java.util.concurrent.Executors
  *
  */
 class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
-
-    private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    private val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
 
     private val threadPool = Executors.newFixedThreadPool(10)
 
@@ -49,12 +47,14 @@ class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_synthesizer)
+
         muxer.setStateListener(this)
     }
 
     fun onStartClick(view: View) {
         btn.text = "正在编码"
         btn.isEnabled = false
+
         initVideo()
         initAudio()
         initAudioEncoder()
@@ -89,6 +89,7 @@ class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
         drawer.getSurfaceTexture {
             initVideoDecoder(path, Surface(it))
         }
+
         renderer.addDrawer(drawer)
     }
 

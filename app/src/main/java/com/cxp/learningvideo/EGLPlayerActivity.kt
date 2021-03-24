@@ -25,8 +25,10 @@ import java.util.concurrent.Executors
  *
  */
 class EGLPlayerActivity : AppCompatActivity() {
-    private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_2.mp4"
-    private val path2 = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    private val path =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/biterate9.mp4"
+    private val path2 =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
 
     private val threadPool = Executors.newFixedThreadPool(10)
 
@@ -35,8 +37,10 @@ class EGLPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_egl_player)
+
         initFirstVideo()
         initSecondVideo()
+
         setRenderSurface()
     }
 

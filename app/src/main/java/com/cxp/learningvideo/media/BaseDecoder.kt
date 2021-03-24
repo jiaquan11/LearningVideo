@@ -113,9 +113,7 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
                     mStartTimeForSync = System.currentTimeMillis() - getCurTimeStamp()
                 }
 
-                if (!mIsRunning ||
-                    mState == DecodeState.STOP
-                ) {
+                if (!mIsRunning || (mState == DecodeState.STOP)) {
                     mIsRunning = false
                     break
                 }

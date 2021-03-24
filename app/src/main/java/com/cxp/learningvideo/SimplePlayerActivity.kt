@@ -34,6 +34,9 @@ class SimplePlayerActivity : AppCompatActivity() {
     private fun initPlayer() {
         val threadPool = Executors.newFixedThreadPool(10)//创建一个线程池
 
+        /*从SurfaceView控件中拿到surface缓冲区，并配置给硬件解码器,
+        硬件解码器将解码数据输出到surface缓冲区中，并刷新到SurfaceView控件中渲染
+         */
         videoDecoder = VideoDecoder(path, sfv, null)
         threadPool.execute(videoDecoder)
 

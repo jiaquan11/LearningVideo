@@ -53,7 +53,9 @@ class EGLCore {
         }
 
         if (mEGLContext === EGL14.EGL_NO_CONTEXT) {
-            val config = getConfig(flags, 2) ?: throw RuntimeException("Unable to find a suitable EGLConfig")
+            val config =
+                getConfig(flags, 2) ?: throw RuntimeException("Unable to find a suitable EGLConfig")
+
             val attr2List = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE)
             val context = EGL14.eglCreateContext(
                 mEGLDisplay, config, sharedContext,
@@ -99,9 +101,12 @@ class EGLCore {
         val numConfigs = IntArray(1)
 
         //获取EGL配置
-        if (!EGL14.eglChooseConfig(mEGLDisplay, attrList, 0,
+        if (!EGL14.eglChooseConfig(
+                mEGLDisplay, attrList, 0,
                 configs, 0, configs.size,
-                numConfigs, 0)) {
+                numConfigs, 0
+            )
+        ) {
             Log.w(TAG, "Unable to find RGB8888 / $version EGLConfig")
             return null
         }
@@ -121,8 +126,9 @@ class EGLCore {
         val surfaceAttr = intArrayOf(EGL14.EGL_NONE)
 
         val eglSurface = EGL14.eglCreateWindowSurface(
-                                        mEGLDisplay, mEGLConfig, surface,
-                                        surfaceAttr, 0)
+            mEGLDisplay, mEGLConfig, surface,
+            surfaceAttr, 0
+        )
 
         if (eglSurface == null) {
             throw RuntimeException("Surface was null")
@@ -137,13 +143,16 @@ class EGLCore {
      * @param height 缓存窗口高
      */
     fun createOffscreenSurface(width: Int, height: Int): EGLSurface {
-        val surfaceAttr = intArrayOf(EGL14.EGL_WIDTH, width,
-                                                 EGL14.EGL_HEIGHT, height,
-                                                 EGL14.EGL_NONE)
+        val surfaceAttr = intArrayOf(
+            EGL14.EGL_WIDTH, width,
+            EGL14.EGL_HEIGHT, height,
+            EGL14.EGL_NONE
+        )
 
         val eglSurface = EGL14.eglCreatePbufferSurface(
-                                        mEGLDisplay, mEGLConfig,
-                                        surfaceAttr, 0)
+            mEGLDisplay, mEGLConfig,
+            surfaceAttr, 0
+        )
 
         if (eglSurface == null) {
             throw RuntimeException("Surface was null")

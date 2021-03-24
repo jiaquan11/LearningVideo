@@ -29,14 +29,15 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
     private val mDrawers = mutableListOf<IDrawer>()
 
     init {
-        mThread.start()
+        mThread.start()//启动自定义的渲染线程
     }
 
-    fun setSurface(surface: SurfaceView) {
+    fun setSurface(surface: SurfaceView) {//设置SurfaceView控件进来
         mSurfaceView = WeakReference(surface)
         surface.holder.addCallback(this)
 
-        surface.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
+        //SurfaceView控件添加状态改变监听
+        surface.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(v: View?) {
                 stop()
             }
@@ -69,8 +70,9 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
         mSurface = null
     }
 
+    //SurfaceView控件的界面Callback重置函数
     override fun surfaceCreated(holder: SurfaceHolder) {
-        mSurface = holder.surface
+        mSurface = holder.surface//获取到SurfaceView的Surface
         mThread.onSurfaceCreate()
     }
 
@@ -82,8 +84,7 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
         mThread.onSurfaceDestroy()
     }
 
-    inner class RenderThread: Thread() {
-
+    inner class RenderThread : Thread() {
         // 渲染状态
         private var mState = RenderState.NO_SURFACE
 
@@ -152,7 +153,9 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
         }
 
         override fun run() {
+
             initEGL()
+
             while (true) {
                 when (mState) {
                     RenderState.FRESH_SURFACE -> {
@@ -183,6 +186,7 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
                         holdOn()
                     }
                 }
+
                 if (mRenderMode == RenderMode.RENDER_CONTINUOUSLY) {
                     sleep(16)
                 }
@@ -204,6 +208,7 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
                     //开启混合，即半透明
                     GLES20.glEnable(GLES20.GL_BLEND)
                     GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+
                     generateTextureID()
                 }
             }
@@ -241,7 +246,9 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
 
             if (render) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+
                 mDrawers.forEach { it.draw() }
+
                 mEGLSurface?.setTimestamp(mCurTimestamp)
                 mEGLSurface?.swapBuffers()
             }

@@ -94,16 +94,18 @@ class VideoDrawer : IDrawer {
     private var mHeightRatio = 1f
     private fun initDefMatrix() {
         if (mMatrix != null) return
-        if (mVideoWidth != -1 && mVideoHeight != -1 &&
-            mWorldWidth != -1 && mWorldHeight != -1
+        if ((mVideoWidth != -1) && (mVideoHeight != -1) &&
+            (mWorldWidth != -1) && (mWorldHeight != -1)
         ) {
             mMatrix = FloatArray(16)
             var prjMatrix = FloatArray(16)
-            val originRatio = mVideoWidth / mVideoHeight.toFloat()
-            val worldRatio = mWorldWidth / mWorldHeight.toFloat()
+            val originRatio = mVideoWidth / mVideoHeight.toFloat()//渲染视频的宽高比
+            val worldRatio = mWorldWidth / mWorldHeight.toFloat()//屏幕宽高比
             if (mWorldWidth > mWorldHeight) {
+                //渲染视频宽高比大于屏幕宽高比，采用视频宽高等比，屏幕得到缩放后的比例，宽>高，则宽平铺屏幕，高进行缩放
                 if (originRatio > worldRatio) {
                     mHeightRatio = originRatio / worldRatio
+                    //正交投影
                     Matrix.orthoM(
                         prjMatrix, 0,
                         -mWidthRatio, mWidthRatio,
@@ -152,11 +154,13 @@ class VideoDrawer : IDrawer {
         }
     }
 
+    //渲染视频的宽高
     override fun setVideoSize(videoW: Int, videoH: Int) {
         mVideoWidth = videoW
         mVideoHeight = videoH
     }
 
+    //屏幕的宽高
     override fun setWorldSize(worldW: Int, worldH: Int) {
         mWorldWidth = worldW
         mWorldHeight = worldH

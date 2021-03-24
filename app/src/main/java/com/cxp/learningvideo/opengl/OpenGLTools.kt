@@ -22,7 +22,7 @@ object OpenGLTools {
         val textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
-        GLES20.glTexImage2D(
+        GLES20.glTexImage2D(//设置FBO分配内存大小
             GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height,
             0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null
         )
@@ -50,12 +50,14 @@ object OpenGLTools {
         return textures[0]
     }
 
+    //1.创建FBO
     fun createFrameBuffer(): Int {
         val fbs = IntArray(1)
         GLES20.glGenFramebuffers(1, fbs, 0)
         return fbs[0]
     }
 
+    //2.绑定FBO
     fun bindFBO(fb: Int, textureId: Int) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fb)
         GLES20.glFramebufferTexture2D(
@@ -64,12 +66,15 @@ object OpenGLTools {
         )
     }
 
+    //3.解绑FBO
     fun unbindFBO() {
         GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, GLES20.GL_NONE)
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_NONE)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
 
+    //4.删除FBO资源
     fun deleteFBO(frame: IntArray, texture: IntArray) {
         //删除Render Buffer
         GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, GLES20.GL_NONE)
@@ -81,5 +86,4 @@ object OpenGLTools {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
         GLES20.glDeleteTextures(1, texture, 0)
     }
-
 }

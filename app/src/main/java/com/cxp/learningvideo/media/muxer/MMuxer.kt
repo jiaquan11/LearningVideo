@@ -40,7 +40,7 @@ class MMuxer {
 
     init {
         val fileName =
-            "LVideo_Test" + SimpleDateFormat("yyyyMM_dd-HHmmss").format(Date()) + ".mp4"
+            "LVideo_Test11" + SimpleDateFormat("yyyyMM_dd-HHmmss").format(Date()) + ".mp4"
         val filePath = Environment.getExternalStorageDirectory().absolutePath.toString() + "/"
         mPath = filePath + fileName
         mMediaMuxer = MediaMuxer(mPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)

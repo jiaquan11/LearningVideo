@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clickEncoder(view: View?) {
-        startActivity(Intent(this, SynthesizerActivity::class.java))
+        startActivity(Intent(this, SynthesizerActivity::class.java))//视频硬编码
     }
 
     fun clickFFmpegInfo(view: View?) {

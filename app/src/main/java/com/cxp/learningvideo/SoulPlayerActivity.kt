@@ -12,7 +12,6 @@ import com.cxp.learningvideo.opengl.drawer.SoulVideoDrawer
 import kotlinx.android.synthetic.main.activity_opengl_player.*
 import java.util.concurrent.Executors
 
-
 /**
  * 灵魂出窍播放
  *
@@ -23,18 +22,19 @@ import java.util.concurrent.Executors
  *
  */
 class SoulPlayerActivity : AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
     lateinit var drawer: IDrawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opengl_player)
+
         initRender()
     }
 
     private fun initRender() {
         drawer = SoulVideoDrawer()
-        drawer.setVideoSize(1920, 1080)
+        drawer.setVideoSize(720, 1280)
         drawer.getSurfaceTexture {
             initPlayer(Surface(it))
         }

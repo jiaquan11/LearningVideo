@@ -12,7 +12,6 @@ import com.cxp.learningvideo.opengl.drawer.VideoDrawer
 import kotlinx.android.synthetic.main.activity_opengl_player.*
 import java.util.concurrent.Executors
 
-
 /**
  * 使用OpenGL渲染多个视频画面的播放器
  *
@@ -23,8 +22,10 @@ import java.util.concurrent.Executors
  *
  */
 class MultiOpenGLPlayerActivity : AppCompatActivity() {
-    private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_2.mp4"
-    private val path2 = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    private val path =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/biterate9.mp4"//demo_video.mp4  biterate9.mp4
+    private val path2 =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
 
     private val render = SimpleRender()
 
@@ -33,11 +34,18 @@ class MultiOpenGLPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opengl_player)
+
         initFirstVideo()
         initSecondVideo()
+
         initRender()
     }
 
+    /*
+    * Opengl渲染多个视频 实现画中画的效果
+    * 共用同一个GLSurfaceView控件渲染，共用的是同一个纹理ID，叠加渲染，
+    * 只是渲染参数不一致，因此可以渲染的效果不一致
+    * */
     private fun initFirstVideo() {
         val drawer = VideoDrawer()
         drawer.setVideoSize(1920, 1080)
@@ -76,7 +84,6 @@ class MultiOpenGLPlayerActivity : AppCompatActivity() {
 
     private fun initRender() {
         gl_surface.setEGLContextClientVersion(2)
-        gl_surface.setRenderer(render)
+        gl_surface.setRenderer(render)//启动GL render线程
     }
-
 }

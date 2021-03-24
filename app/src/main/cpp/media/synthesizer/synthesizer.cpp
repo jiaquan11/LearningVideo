@@ -12,7 +12,6 @@ static int WIDTH = 1920;
 static int HEIGHT = 1080;
 
 Synthesizer::Synthesizer(JNIEnv *env, jstring src_path, jstring dst_path) {
-
     // 封装器
     m_mp4_muxer = new Mp4Muxer();
     m_mp4_muxer->Init(env, dst_path);
