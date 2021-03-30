@@ -3,6 +3,7 @@ package com.cxp.learningvideo
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Surface
 import android.view.View
 import com.cxp.learningvideo.media.BaseDecoder
@@ -30,7 +31,8 @@ import java.util.concurrent.Executors
  *
  */
 class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
-    private val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
+    private val path =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"//biterate9.mp4  demo_video.mp4
 
     private val threadPool = Executors.newFixedThreadPool(10)
 
@@ -57,16 +59,69 @@ class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
 
         initVideo()
         initAudio()
+
         initAudioEncoder()
         initVideoEncoder()
     }
 
+    private fun initVideo() {
+        val drawer = VideoDrawer() // SoulVideoDrawer()
+        drawer.setVideoSize(720, 1280)//解码视频画面宽高
+        drawer.getSurfaceTexture {
+            initVideoDecoder(path, Surface(it))
+        }
+
+        renderer.addDrawer(drawer)
+    }
+
+    private fun initVideoDecoder(path: String, sf: Surface) {
+        videoDecoder?.stop()
+
+        videoDecoder = VideoDecoder(path, null, sf).withoutSync()
+        videoDecoder!!.setStateListener(object : DefDecodeStateListener {
+            override fun decodeOneFrame(decodeJob: BaseDecoder?, frame: Frame) {
+                renderer.notifySwap(frame.bufferInfo.presentationTimeUs)
+                videoEncoder.encodeOneFrame(frame)
+            }
+
+            override fun decoderFinish(decodeJob: BaseDecoder?) {
+                Log.i("SynthesizerActivity", "Video decoderFinish")
+                videoEncoder.endOfStream()
+            }
+        })
+        videoDecoder!!.goOn()
+
+        //启动解码线程
+        threadPool.execute(videoDecoder!!)
+    }
+
+    private fun initAudio() {
+        audioDecoder?.stop()
+
+        audioDecoder = AudioDecoder(path).withoutSync()
+        audioDecoder!!.setStateListener(object : DefDecodeStateListener {
+            override fun decodeOneFrame(decodeJob: BaseDecoder?, frame: Frame) {
+                //Log.i("SynthesizerActivity", "Audio decodeOneFrame flag: " + frame.bufferInfo.flags)
+                audioEncoder.encodeOneFrame(frame)
+            }
+
+            override fun decoderFinish(decodeJob: BaseDecoder?) {
+                Log.i("SynthesizerActivity", "Audio decoderFinish")
+                audioEncoder.endOfStream()
+            }
+        })
+        audioDecoder!!.goOn()
+
+        //启动解码线程
+        threadPool.execute(audioDecoder!!)
+    }
+
     private fun initVideoEncoder() {
         // 视频编码器
-        videoEncoder = VideoEncoder(muxer, 1920, 1080)
+        videoEncoder = VideoEncoder(muxer, 720, 1280)//编码输出视频宽高 也就是设置整个视频宽高
 
         renderer.setRenderMode(CustomerGLRenderer.RenderMode.RENDER_WHEN_DIRTY)
-        renderer.setSurface(videoEncoder.getEncodeSurface()!!, 1920, 1080)
+        renderer.setSurface(videoEncoder.getEncodeSurface()!!, 720, 1280)//设置整个视频宽高
 
         videoEncoder.setStateListener(object : DefEncodeStateListener {
             override fun encoderFinish(encoder: BaseEncoder) {
@@ -81,54 +136,6 @@ class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
         audioEncoder = AudioEncoder(muxer)
         // 启动编码线程
         threadPool.execute(audioEncoder)
-    }
-
-    private fun initVideo() {
-        val drawer = VideoDrawer() // SoulVideoDrawer()
-        drawer.setVideoSize(1920, 1080)
-        drawer.getSurfaceTexture {
-            initVideoDecoder(path, Surface(it))
-        }
-
-        renderer.addDrawer(drawer)
-    }
-
-    private fun initVideoDecoder(path: String, sf: Surface) {
-        videoDecoder?.stop()
-        videoDecoder = VideoDecoder(path, null, sf).withoutSync()
-        videoDecoder!!.setStateListener(object : DefDecodeStateListener {
-            override fun decodeOneFrame(decodeJob: BaseDecoder?, frame: Frame) {
-                renderer.notifySwap(frame.bufferInfo.presentationTimeUs)
-                videoEncoder.encodeOneFrame(frame)
-            }
-
-            override fun decoderFinish(decodeJob: BaseDecoder?) {
-                videoEncoder.endOfStream()
-            }
-        })
-        videoDecoder!!.goOn()
-
-        //启动解码线程
-        threadPool.execute(videoDecoder!!)
-    }
-
-    private fun initAudio() {
-        audioDecoder?.stop()
-        audioDecoder = AudioDecoder(path).withoutSync()
-        audioDecoder!!.setStateListener(object : DefDecodeStateListener {
-
-            override fun decodeOneFrame(decodeJob: BaseDecoder?, frame: Frame) {
-                audioEncoder.encodeOneFrame(frame)
-            }
-
-            override fun decoderFinish(decodeJob: BaseDecoder?) {
-                audioEncoder.endOfStream()
-            }
-        })
-        audioDecoder!!.goOn()
-
-        //启动解码线程
-        threadPool.execute(audioDecoder!!)
     }
 
     override fun onMuxerFinish() {

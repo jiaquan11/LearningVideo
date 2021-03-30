@@ -8,7 +8,6 @@ import android.util.Log
 import com.cxp.learningvideo.media.muxer.MMuxer
 import java.nio.ByteBuffer
 
-
 /**
  * 视频编码器
  *
@@ -20,32 +19,40 @@ import java.nio.ByteBuffer
 
 // 编码采样率率
 val DEST_SAMPLE_RATE = 44100
+
 // 编码码率
 private val DEST_BIT_RATE = 128000
 
-class AudioEncoder(muxer: MMuxer): BaseEncoder(muxer) {
-
+class AudioEncoder(muxer: MMuxer) : BaseEncoder(muxer) {
     private val TAG = "AudioEncoder"
 
     override fun encodeType(): String {
+        Log.i(TAG, "AudioEncoder encodeType audio/mp4a-latm")
         return "audio/mp4a-latm"
     }
 
     override fun configEncoder(codec: MediaCodec) {
+        Log.i(TAG, "AudioEncoder configEncoder start")
         val audioFormat = MediaFormat.createAudioFormat(encodeType(), DEST_SAMPLE_RATE, 2)
-        audioFormat.setInteger(MediaFormat.KEY_BIT_RATE, DEST_BIT_RATE)
-        audioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 100*1024)
+        audioFormat.setInteger(MediaFormat.KEY_BIT_RATE, DEST_BIT_RATE)//码率
+        audioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 100 * 1024)//输入
         try {
+            Log.i(TAG, "audio configEncoderWithCQ 1111")
             configEncoderWithCQ(codec, audioFormat)
+            Log.i(TAG, "audio configEncoderWithCQ 2222")
         } catch (e: Exception) {
             e.printStackTrace()
             try {
+                Log.i(TAG, "audio configEncoderWithVBR 111")
                 configEncoderWithVBR(codec, audioFormat)
+                Log.i(TAG, "audio configEncoderWithVBR 222")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e(TAG, "配置音频编码器失败")
             }
         }
+
+        Log.i(TAG, "AudioEncoder configEncoder end")
     }
 
     private fun configEncoderWithCQ(codec: MediaCodec, outputFormat: MediaFormat) {
@@ -73,10 +80,6 @@ class AudioEncoder(muxer: MMuxer): BaseEncoder(muxer) {
         muxer.addAudioTrack(mediaFormat)
     }
 
-    override fun frameWaitTimeMs(): Long {
-        return 5
-    }
-
     override fun writeData(
         muxer: MMuxer,
         byteBuffer: ByteBuffer,
@@ -86,6 +89,12 @@ class AudioEncoder(muxer: MMuxer): BaseEncoder(muxer) {
     }
 
     override fun release(muxer: MMuxer) {
+        Log.i(TAG, "AudioEncoder releaseAudioTrack")
         muxer.releaseAudioTrack()
+    }
+
+    //每一帧排队等待时间
+    override fun frameWaitTimeMs(): Long {
+        return 5
     }
 }

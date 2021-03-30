@@ -1,6 +1,5 @@
 package com.cxp.learningvideo.media.encoder
 
-
 /**
  * 编码状态回调接口
  *

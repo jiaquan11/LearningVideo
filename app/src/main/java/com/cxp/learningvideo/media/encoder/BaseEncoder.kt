@@ -7,7 +7,6 @@ import com.cxp.learningvideo.media.Frame
 import com.cxp.learningvideo.media.muxer.MMuxer
 import java.nio.ByteBuffer
 
-
 /**
  * 基础编码器
  *
@@ -18,7 +17,6 @@ import java.nio.ByteBuffer
  *
  */
 abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : Runnable {
-
     private val TAG = "BaseEncoder"
 
     // 目标视频宽，只有视频编码的时候才有效
@@ -64,9 +62,11 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
      * 初始化编码器
      */
     private fun initCodec() {
+        Log.i(TAG, "开始编码器初始化")
         mCodec = MediaCodec.createEncoderByType(encodeType())
         configEncoder(mCodec)
         mCodec.start()
+
         mOutputBuffers = mCodec.outputBuffers
         mInputBuffers = mCodec.inputBuffers
         Log.i(TAG, "编码器初始化完成")
@@ -95,9 +95,11 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
                 }
 
                 if (encodeManually()) {
+                    //Log.i(TAG, "audio encode")
                     encode(frame)
                 } else if (frame.buffer == null) { // 如果是自动编码（比如视频），遇到结束帧的时候，直接结束掉
-                    Log.e(TAG, "发送编码结束标志")
+                    //视频解码结束帧没有数据的，但是会有一个封装的Frame,内部有结束标识过来
+                    Log.e(TAG, "视频发送编码结束标志")
                     // This may only be used with encoders receiving input from a Surface
                     mCodec.signalEndOfInputStream()
                     mIsEOS = true
@@ -111,9 +113,7 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
      * 编码
      */
     private fun encode(frame: Frame) {
-
         val index = mCodec.dequeueInputBuffer(-1)
-
         /*向编码器输入数据*/
         if (index >= 0) {
             val inputBuffer = mInputBuffers!![index]
@@ -121,14 +121,19 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
             if (frame.buffer != null) {
                 inputBuffer.put(frame.buffer)
             }
-            if (frame.buffer == null || frame.bufferInfo.size <= 0) { // 小于等于0时，为音频结束符标记
-                mCodec.queueInputBuffer(index, 0, 0,
-                    frame.bufferInfo.presentationTimeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+            //Log.i(TAG, "Audio encode frame.bufferInfo.size: " + frame.bufferInfo.size + " flag: " + frame.bufferInfo.flags)
+            if ((frame.buffer == null) || ((frame.bufferInfo.size <= 0) && (frame.bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM))) { // 小于等于0时，为音频结束符标记
+                mCodec.queueInputBuffer(
+                    index, 0, 0,
+                    frame.bufferInfo.presentationTimeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM
+                )
             } else {
                 frame.buffer?.flip()
                 frame.buffer?.mark()
-                mCodec.queueInputBuffer(index, 0, frame.bufferInfo.size,
-                    frame.bufferInfo.presentationTimeUs, 0)
+                mCodec.queueInputBuffer(
+                    index, 0, frame.bufferInfo.size,
+                    frame.bufferInfo.presentationTimeUs, 0
+                )
             }
             frame.buffer?.clear()
         }
@@ -152,7 +157,7 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
                     if (mBufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                         mIsEOS = true
                         mBufferInfo.set(0, 0, 0, mBufferInfo.flags)
-                        Log.e(TAG, "编码结束")
+                        Log.i(TAG, "编码结束")
                     }
 
                     if (mBufferInfo.flags == MediaCodec.BUFFER_FLAG_CODEC_CONFIG) {
@@ -207,7 +212,7 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
             synchronized(mLock) {
                 mLock.notify()
             }
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -267,6 +272,8 @@ abstract class BaseEncoder(muxer: MMuxer, width: Int = -1, height: Int = -1) : R
      * 释放子类资源
      */
     abstract fun release(muxer: MMuxer)
+
+    //open关键字表示可以该方法可以被重写
 
     /**
      * 每一帧排队等待时间
