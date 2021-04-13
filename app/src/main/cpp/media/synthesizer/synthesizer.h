@@ -7,7 +7,6 @@
 #ifndef LEARNVIDEO_OPENGL_SYNTHESIZER_H
 #define LEARNVIDEO_OPENGL_SYNTHESIZER_H
 
-
 #include "../muxer/i_muxer_cb.h"
 #include "../decoder/video/v_decoder.h"
 #include "../decoder/audio/a_decoder.h"
@@ -19,7 +18,6 @@
 
 class Synthesizer: IMuxerCb, IDecodeStateCb, IEncodeStateCb, OpenGLPixelReceiver {
 private:
-
     VideoDecoder *m_video_decoder = NULL;
 
     AudioDecoder *m_audio_decoder = NULL;
@@ -62,6 +60,4 @@ public:
     void EncodeProgress(long time) override;
     void EncodeFinish() override;
 };
-
-
 #endif //LEARNVIDEO_OPENGL_SYNTHESIZER_H

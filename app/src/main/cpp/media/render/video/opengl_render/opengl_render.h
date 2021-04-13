@@ -1,7 +1,6 @@
 //
 // Created by cxp on 2019-08-06.
 //
-
 #ifndef LEARNVIDEO_OPENGL_RENDER_H
 #define LEARNVIDEO_OPENGL_RENDER_H
 
@@ -15,10 +14,8 @@
 #include "opengl_pixel_receiver.h"
 #include <memory>
 
-
 class OpenGLRender {
 private:
-
     const char *TAG = "OpenGLRender";
 
     enum STATE {
@@ -51,17 +48,20 @@ private:
 
     bool m_need_output_pixels = false;
 
-    OpenGLPixelReceiver * m_pixel_receiver = NULL;
+    OpenGLPixelReceiver *m_pixel_receiver = NULL;
 
     STATE m_state = NO_SURFACE;
 
     // 初始化相关的方法
     void InitRenderThread();
+
     bool InitEGL();
+
     void InitDspWindow(JNIEnv *env);
 
     // 创建Surface
     void CreateSurface();
+
     void DestroySurface();
 
     // 渲染方法
@@ -69,8 +69,11 @@ private:
 
     // 释放资源相关方法
     void ReleaseRender();
+
     void ReleaseDrawers();
+
     void ReleaseSurface();
+
     void ReleaseWindow();
 
     // 渲染线程回调方法
@@ -78,6 +81,7 @@ private:
 
 public:
     OpenGLRender(JNIEnv *env, DrawerProxy *drawer_proxy);
+
     ~OpenGLRender();
 
     void SetPixelReceiver(OpenGLPixelReceiver *receiver) {
@@ -85,10 +89,11 @@ public:
     }
 
     void SetSurface(jobject surface);
+
     void SetOffScreenSize(int width, int height);
+
     void RequestRgbaData();
+
     void Stop();
 };
-
-
 #endif //LEARNVIDEO_OPENGL_RENDER_H

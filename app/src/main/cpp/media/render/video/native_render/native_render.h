@@ -1,7 +1,6 @@
 //
 // Created by cxp on 2019-08-06.
 //
-
 #ifndef LEARNVIDEO_NATIVE_RENDER_H
 #define LEARNVIDEO_NATIVE_RENDER_H
 
@@ -42,6 +41,4 @@ public:
     void Render(OneFrame *one_frame) override ;
     void ReleaseRender() override ;
 };
-
-
 #endif //LEARNVIDEO_NATIVE_RENDER_H

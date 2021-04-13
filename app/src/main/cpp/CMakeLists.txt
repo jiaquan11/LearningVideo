@@ -150,7 +150,6 @@ add_library( # Sets the name of the library.
 
 # 指定编译目标库时，cmake要链接的库
 target_link_libraries(
-
         # 指定目标库，native-lib 是在上面 add_library 中配置的目标库
         native-lib
 

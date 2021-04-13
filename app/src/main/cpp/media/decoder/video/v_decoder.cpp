@@ -8,7 +8,7 @@
 #include "../../one_frame.h"
 
 VideoDecoder::VideoDecoder(JNIEnv *env, jstring path, bool for_synthesizer)
-: BaseDecoder(env, path, for_synthesizer) {
+        : BaseDecoder(env, path, for_synthesizer) {
 }
 
 VideoDecoder::~VideoDecoder() {
@@ -65,7 +65,8 @@ void VideoDecoder::InitSws() {
 void VideoDecoder::Render(AVFrame *frame) {
     sws_scale(m_sws_ctx, frame->data, frame->linesize, 0,
               height(), m_rgb_frame->data, m_rgb_frame->linesize);
-    OneFrame * one_frame = new OneFrame(m_rgb_frame->data[0], m_rgb_frame->linesize[0], frame->pts, time_base(), NULL, false);
+    OneFrame *one_frame = new OneFrame(m_rgb_frame->data[0], m_rgb_frame->linesize[0], frame->pts,
+                                       time_base(), NULL, false);
     m_video_render->Render(one_frame);
 
     if (m_state_cb != NULL) {

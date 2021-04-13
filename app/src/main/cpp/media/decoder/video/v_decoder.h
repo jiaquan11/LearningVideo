@@ -59,7 +59,9 @@ private:
 
 public:
     VideoDecoder(JNIEnv *env, jstring path, bool for_synthesizer = false);
+
     ~VideoDecoder();
+
     void SetRender(VideoRender *render);
 
 protected:
@@ -95,6 +97,4 @@ protected:
         return "VIDEO";
     };
 };
-
-
 #endif //LEARNVIDEO_V_DECODER_H

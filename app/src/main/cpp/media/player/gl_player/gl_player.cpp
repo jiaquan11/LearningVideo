@@ -1,7 +1,6 @@
 //
 // Created by cxp on 2020-05-31.
 //
-
 #include "gl_player.h"
 
 #include "../../render/video/native_render/native_render.h"
@@ -16,7 +15,7 @@ GLPlayer::GLPlayer(JNIEnv *jniEnv, jstring path) {
     m_v_drawer = new VideoDrawer();
     m_v_decoder->SetRender(m_v_drawer);
 
-    DefDrawerProxyImpl *proxyImpl =  new DefDrawerProxyImpl();
+    DefDrawerProxyImpl *proxyImpl = new DefDrawerProxyImpl();
     proxyImpl->AddDrawer(m_v_drawer);
 
     m_v_drawer_proxy = proxyImpl;

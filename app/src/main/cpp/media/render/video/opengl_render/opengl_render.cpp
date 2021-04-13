@@ -9,8 +9,8 @@
 #include "opengl_render.h"
 #include "../../../../opengl/drawer/video_drawer.h"
 
-OpenGLRender::OpenGLRender(JNIEnv *env, DrawerProxy *drawer_proxy):
-m_drawer_proxy(drawer_proxy) {
+OpenGLRender::OpenGLRender(JNIEnv *env, DrawerProxy *drawer_proxy) :
+        m_drawer_proxy(drawer_proxy) {
     this->m_env = env;
     //获取JVM虚拟机，为创建线程作准备
     env->GetJavaVM(&m_jvm_for_thread);
@@ -29,7 +29,7 @@ void OpenGLRender::InitRenderThread() {
 }
 
 void OpenGLRender::sRenderThread(std::shared_ptr<OpenGLRender> that) {
-    JNIEnv * env;
+    JNIEnv *env;
 
     //将线程附加到虚拟机，并获取env
     if (that->m_jvm_for_thread->AttachCurrentThread(&env, NULL) != JNI_OK) {
@@ -37,7 +37,7 @@ void OpenGLRender::sRenderThread(std::shared_ptr<OpenGLRender> that) {
         return;
     }
 
-    if(!that->InitEGL()) {
+    if (!that->InitEGL()) {
         //解除线程和jvm关联
         that->m_jvm_for_thread->DetachCurrentThread();
         return;

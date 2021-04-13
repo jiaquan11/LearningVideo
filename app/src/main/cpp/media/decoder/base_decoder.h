@@ -21,10 +21,8 @@ extern "C" {
 #include <libavutil/time.h>
 };
 
-class BaseDecoder: public IDecoder {
-
+class BaseDecoder : public IDecoder {
 private:
-
     const char *TAG = "BaseDecoder";
 
     //-------------定义解码相关------------------------------
@@ -87,7 +85,7 @@ private:
      * 初始化FFMpeg相关的参数
      * @param env jvm环境
      */
-    void InitFFMpegDecoder(JNIEnv * env);
+    void InitFFMpegDecoder(JNIEnv *env);
 
     /**
      * 分配解码过程中需要的缓存
@@ -128,6 +126,7 @@ private:
 
 public:
     BaseDecoder(JNIEnv *env, jstring path, bool for_synthesizer);
+
     virtual ~BaseDecoder();
 
     /**
@@ -151,10 +150,15 @@ public:
     }
 
     void GoOn() override;
+
     void Pause() override;
+
     void Stop() override;
+
     bool IsRunning() override;
+
     long GetDuration() override;
+
     long GetCurPos() override;
 
     void SetStateReceiver(IDecodeStateCb *cb) override {
@@ -163,12 +167,18 @@ public:
 
     char *GetStateStr() {
         switch (m_state) {
-            case STOP: return (char *)"STOP";
-            case START: return (char *)"START";
-            case DECODING: return (char *)"DECODING";
-            case PAUSE: return (char *)"PAUSE";
-            case FINISH: return (char *)"FINISH";
-            default: return (char *)"UNKNOW";
+            case STOP:
+                return (char *) "STOP";
+            case START:
+                return (char *) "START";
+            case DECODING:
+                return (char *) "DECODING";
+            case PAUSE:
+                return (char *) "PAUSE";
+            case FINISH:
+                return (char *) "FINISH";
+            default:
+                return (char *) "UNKNOW";
         }
     }
 
@@ -183,7 +193,7 @@ protected:
         return m_for_synthesizer;
     }
 
-    const char * path() {
+    const char *path() {
         return m_path;
     }
 
@@ -214,7 +224,7 @@ protected:
      * 解码一帧数据
      * @return
      */
-    AVFrame* DecodeOneFrame();
+    AVFrame *DecodeOneFrame();
 
     /**
      * 音视频索引
@@ -262,6 +272,5 @@ protected:
 
     void CallbackState(DecodeState status);
 };
-
 
 #endif //LEARNVIDEO_BASEDECODER_H

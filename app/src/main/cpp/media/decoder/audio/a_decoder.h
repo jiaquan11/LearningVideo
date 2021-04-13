@@ -5,7 +5,6 @@
 #ifndef LEARNINGVIDEO_A_DECODER_H
 #define LEARNINGVIDEO_A_DECODER_H
 
-
 #include "../base_decoder.h"
 #include "../../render/audio/audio_render.h"
 #include "../../const.h"
@@ -16,9 +15,8 @@ extern "C" {
 #include <libavutil/audio_fifo.h>
 };
 
-class AudioDecoder: public BaseDecoder {
+class AudioDecoder : public BaseDecoder {
 private:
-
     const char *TAG = "AudioDecoder";
 
     // 音频转换器
@@ -86,13 +84,16 @@ private:
 
 public:
     AudioDecoder(JNIEnv *env, const jstring path, bool forSynthesizer);
+
     ~AudioDecoder();
 
     void SetRender(AudioRender *render);
 
 protected:
     void Prepare(JNIEnv *env) override;
+
     void Render(AVFrame *frame) override;
+
     void Release() override;
 
     bool NeedLoopDecode() override {
@@ -107,6 +108,4 @@ protected:
         return "AUDIO";
     };
 };
-
-
 #endif //LEARNINGVIDEO_A_DECODER_H

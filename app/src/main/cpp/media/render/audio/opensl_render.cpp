@@ -101,21 +101,24 @@ bool OpenSLRender::CreateOutputMixer() {
     result = (*m_output_mix_obj)->Realize(m_output_mix_obj, SL_BOOLEAN_FALSE);
     if (CheckError(result, "Output Mix Realize")) return false;
 
-    result = (*m_output_mix_obj)->GetInterface(m_output_mix_obj, SL_IID_ENVIRONMENTALREVERB, &m_output_mix_evn_reverb);
+    result = (*m_output_mix_obj)->GetInterface(m_output_mix_obj, SL_IID_ENVIRONMENTALREVERB,
+                                               &m_output_mix_evn_reverb);
     if (CheckError(result, "Output Mix Env Reverb")) return false;
 
     if (result == SL_RESULT_SUCCESS) {
-         (*m_output_mix_evn_reverb)->SetEnvironmentalReverbProperties(m_output_mix_evn_reverb, &m_reverb_settings);
+        (*m_output_mix_evn_reverb)->SetEnvironmentalReverbProperties(m_output_mix_evn_reverb,
+                                                                     &m_reverb_settings);
     }
     return true;
 }
 
 bool OpenSLRender::ConfigPlayer() {
     //配置PCM格式信息
-    SLDataLocator_AndroidSimpleBufferQueue android_queue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, SL_QUEUE_BUFFER_COUNT};
+    SLDataLocator_AndroidSimpleBufferQueue android_queue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE,
+                                                            SL_QUEUE_BUFFER_COUNT};
     SLDataFormat_PCM pcm = {
             SL_DATAFORMAT_PCM,//播放pcm格式的数据
-            (SLuint32)2,//2个声道（立体声）
+            (SLuint32) 2,//2个声道（立体声）
             SL_SAMPLINGRATE_44_1,//44100hz的频率
             SL_PCMSAMPLEFORMAT_FIXED_16,//位数 16位
             SL_PCMSAMPLEFORMAT_FIXED_16,//和位数一致就行
@@ -131,7 +134,8 @@ bool OpenSLRender::ConfigPlayer() {
     const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND, SL_IID_VOLUME};
     const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
 
-    SLresult result = (*m_engine)->CreateAudioPlayer(m_engine, &m_pcm_player_obj, &slDataSource, &slDataSink, 3, ids, req);
+    SLresult result = (*m_engine)->CreateAudioPlayer(m_engine, &m_pcm_player_obj, &slDataSource,
+                                                     &slDataSink, 3, ids, req);
     if (CheckError(result, "Player")) return false;
 
     //初始化播放器
@@ -151,7 +155,8 @@ bool OpenSLRender::ConfigPlayer() {
     if (CheckError(result, "Register Callback Interface")) return false;
 
     //获取音量接口
-    result = (*m_pcm_player_obj)->GetInterface(m_pcm_player_obj, SL_IID_VOLUME, &m_pcm_player_volume);
+    result = (*m_pcm_player_obj)->GetInterface(m_pcm_player_obj, SL_IID_VOLUME,
+                                               &m_pcm_player_volume);
     if (CheckError(result, "Player Volume Interface")) return false;
 
     LOGI(TAG, "OpenSL ES init success")
@@ -180,8 +185,9 @@ void OpenSLRender::StartRender() {
     LOGI(TAG, "openSL render start playing")
 }
 
-void OpenSLRender::sReadPcmBufferCbFun(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *context) {
-    OpenSLRender *player = (OpenSLRender *)context;
+void
+OpenSLRender::sReadPcmBufferCbFun(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *context) {
+    OpenSLRender *player = (OpenSLRender *) context;
     player->BlockEnqueue();
 }
 
@@ -206,7 +212,8 @@ void OpenSLRender::BlockEnqueue() {
 
     PcmData *pcmData = m_data_queue.front();
     if (NULL != pcmData && m_pcm_player) {
-        SLresult result = (*m_pcm_buffer)->Enqueue(m_pcm_buffer, pcmData->pcm, (SLuint32) pcmData->size);
+        SLresult result = (*m_pcm_buffer)->Enqueue(m_pcm_buffer, pcmData->pcm,
+                                                   (SLuint32) pcmData->size);
         if (result == SL_RESULT_SUCCESS) {
             // 只做已经使用标记，在下一帧数据压入前移除
             // 保证数据能正常使用，否则可能会出现破音

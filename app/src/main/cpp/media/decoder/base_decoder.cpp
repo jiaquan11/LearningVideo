@@ -3,19 +3,20 @@
 // Author: Chen Xiaoping
 // Create Date: 2019-08-02
 //
-
 #include "base_decoder.h"
 #include "../../utils/timer.c"
 
 BaseDecoder::BaseDecoder(JNIEnv *env, jstring path, bool for_synthesizer)
-: m_for_synthesizer(for_synthesizer) {
+        : m_for_synthesizer(for_synthesizer) {
     Init(env, path);
+
     CreateDecodeThread();
 }
 
 void BaseDecoder::Init(JNIEnv *env, jstring path) {
-    m_path_ref = env->NewGlobalRef(path);
+    m_path_ref = env->NewGlobalRef(path);//原始路径jstring引用，否则无法在线程中操作
     m_path = env->GetStringUTFChars(path, NULL);
+
     //获取JVM虚拟机，为创建线程作准备
     env->GetJavaVM(&m_jvm_for_thread);
 }
@@ -31,12 +32,12 @@ void BaseDecoder::CreateDecodeThread() {
     // 使用智能指针，线程结束时，自动删除本类指针
     std::shared_ptr<BaseDecoder> that(this);
     std::thread t(Decode, that);
-    t.detach();
+    t.detach();//分离线程
 }
 
+//线程函数 Decode
 void BaseDecoder::Decode(std::shared_ptr<BaseDecoder> that) {
-    JNIEnv * env;
-
+    JNIEnv *env;
     //将线程附加到虚拟机，并获取env
     if (that->m_jvm_for_thread->AttachCurrentThread(&env, NULL) != JNI_OK) {
         LOG_ERROR(that->TAG, that->LogSpec(), "Fail to Init decode thread");
@@ -56,10 +57,9 @@ void BaseDecoder::Decode(std::shared_ptr<BaseDecoder> that) {
 
     //解除线程和jvm关联
     that->m_jvm_for_thread->DetachCurrentThread();
-
 }
 
-void BaseDecoder::InitFFMpegDecoder(JNIEnv * env) {
+void BaseDecoder::InitFFMpegDecoder(JNIEnv *env) {
     //1，初始化上下文
     m_format_ctx = avformat_alloc_context();
 
@@ -115,7 +115,7 @@ void BaseDecoder::InitFFMpegDecoder(JNIEnv * env) {
         return;
     }
 
-    m_duration = (long)((float)m_format_ctx->duration/AV_TIME_BASE * 1000);
+    m_duration = (long) ((float) m_format_ctx->duration / AV_TIME_BASE * 1000);
 
     LOG_INFO(TAG, LogSpec(), "Decoder init success")
 }
@@ -136,7 +136,7 @@ void BaseDecoder::LoopDecode() {
     CallbackState(START);
 
     LOG_INFO(TAG, LogSpec(), "Start loop decode")
-    while(1) {
+    while (1) {
         if (m_state != DECODING &&
             m_state != START &&
             m_state != STOP) {
@@ -163,7 +163,7 @@ void BaseDecoder::LoopDecode() {
                 m_state = PAUSE;
             }
         } else {
-            LOG_INFO(TAG, LogSpec(), "m_state = %d" ,m_state)
+            LOG_INFO(TAG, LogSpec(), "m_state = %d", m_state)
             if (ForSynthesizer()) {
                 m_state = STOP;
             } else {
@@ -174,7 +174,7 @@ void BaseDecoder::LoopDecode() {
     }
 }
 
-AVFrame* BaseDecoder::DecodeOneFrame() {
+AVFrame *BaseDecoder::DecodeOneFrame() {
     int ret = av_read_frame(m_format_ctx, m_packet);
     while (ret == 0) {
         if (m_packet->stream_index == m_stream_index) {
@@ -203,7 +203,8 @@ AVFrame* BaseDecoder::DecodeOneFrame() {
                 av_packet_unref(m_packet);
                 return m_frame;
             } else {
-                LOG_INFO(TAG, LogSpec(), "Receive frame error result: %s", av_err2str(AVERROR(result)))
+                LOG_INFO(TAG, LogSpec(), "Receive frame error result: %s",
+                         av_err2str(AVERROR(result)))
             }
         }
         // 释放packet
@@ -214,7 +215,6 @@ AVFrame* BaseDecoder::DecodeOneFrame() {
     LOGI(TAG, "ret = %s", av_err2str(AVERROR(ret)))
     return NULL;
 }
-
 
 void BaseDecoder::CallbackState(DecodeState status) {
     if (m_state_cb != NULL) {
@@ -242,14 +242,15 @@ void BaseDecoder::CallbackState(DecodeState status) {
 }
 
 void BaseDecoder::ObtainTimeStamp() {
-    if(m_frame->pkt_dts != AV_NOPTS_VALUE) {
+    if (m_frame->pkt_dts != AV_NOPTS_VALUE) {
         m_cur_t_s = m_packet->dts;
     } else if (m_frame->pts != AV_NOPTS_VALUE) {
         m_cur_t_s = m_frame->pts;
     } else {
         m_cur_t_s = 0;
     }
-    m_cur_t_s = (int64_t)((m_cur_t_s * av_q2d(m_format_ctx->streams[m_stream_index]->time_base)) * 1000);
+    m_cur_t_s = (int64_t) ((m_cur_t_s * av_q2d(m_format_ctx->streams[m_stream_index]->time_base)) *
+                           1000);
 }
 
 void BaseDecoder::SyncRender() {
@@ -260,7 +261,7 @@ void BaseDecoder::SyncRender() {
     int64_t ct = GetCurMsTime();
     int64_t passTime = ct - m_started_t;
     if (m_cur_t_s > passTime) {
-        av_usleep((unsigned int)((m_cur_t_s - passTime) * 1000));
+        av_usleep((unsigned int) ((m_cur_t_s - passTime) * 1000));
     }
 }
 
@@ -284,7 +285,7 @@ void BaseDecoder::DoneDecode(JNIEnv *env) {
         avformat_free_context(m_format_ctx);
     }
     // 释放转换参数
-    if (m_path_ref != NULL && m_path != NULL) {
+    if ((m_path_ref != NULL) && (m_path != NULL)) {
         env->ReleaseStringUTFChars((jstring) m_path_ref, m_path);
         env->DeleteGlobalRef(m_path_ref);
     }
@@ -296,7 +297,7 @@ void BaseDecoder::DoneDecode(JNIEnv *env) {
 void BaseDecoder::Wait(long second, long ms) {
 //    LOG_INFO(TAG, LogSpec(), "Decoder run into wait, state：%s", GetStateStr())
     pthread_mutex_lock(&m_mutex);
-    if (second > 0 || ms > 0) {
+    if ((second > 0) || (ms > 0)) {
         timeval now;
         timespec outtime;
         gettimeofday(&now, NULL);
@@ -340,5 +341,5 @@ long BaseDecoder::GetDuration() {
 }
 
 long BaseDecoder::GetCurPos() {
-    return (long)m_cur_t_s;
+    return (long) m_cur_t_s;
 }

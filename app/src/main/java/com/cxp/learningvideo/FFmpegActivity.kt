@@ -18,7 +18,7 @@ import java.io.File
  *
  */
 class FFmpegActivity : AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
 
     private var player: Int? = null
 
@@ -26,6 +26,7 @@ class FFmpegActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ffmpeg_info)
         tv.text = ffmpegInfo()
+
         initSfv()
     }
 

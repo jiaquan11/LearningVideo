@@ -1,7 +1,6 @@
 //
 // Created by cxp on 2020-03-18.
 //
-
 #include "player.h"
 #include "../../render/video/native_render/native_render.h"
 #include "../../render/audio/opensl_render.h"
@@ -9,12 +8,13 @@
 #include "../../../opengl/drawer/proxy/def_drawer_proxy_impl.h"
 
 Player::Player(JNIEnv *jniEnv, jstring path, jobject surface) {
+    //video
     m_v_decoder = new VideoDecoder(jniEnv, path);
-
     // 本地窗口播放
     m_v_render = new NativeRender(jniEnv, surface);
     m_v_decoder->SetRender(m_v_render);
 
+    //audio
     // 音频解码
     m_a_decoder = new AudioDecoder(jniEnv, path, false);
     m_a_render = new OpenSLRender();

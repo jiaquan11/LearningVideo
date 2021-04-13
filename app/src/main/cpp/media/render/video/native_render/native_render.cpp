@@ -33,7 +33,7 @@ void NativeRender::InitRender(JNIEnv *env, int video_width, int video_height, in
 
     //设置宽高限制缓冲区中的像素数量
     ANativeWindow_setBuffersGeometry(m_native_window, windowWidth,
-            windowHeight, WINDOW_FORMAT_RGBA_8888);
+                                     windowHeight, WINDOW_FORMAT_RGBA_8888);
 
     dst_size[0] = m_dst_w;
     dst_size[1] = m_dst_h;
