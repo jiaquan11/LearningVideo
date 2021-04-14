@@ -21,6 +21,7 @@ void NativeRender::InitRender(JNIEnv *env, int video_width, int video_height, in
     int windowWidth = ANativeWindow_getWidth(m_native_window);
     int windowHeight = ANativeWindow_getHeight(m_native_window);
 
+    //计算视频渲染区域，将视频等比例缩放进行渲染
     // 计算目标视频的宽高
     m_dst_w = windowWidth;
     m_dst_h = m_dst_w * video_height / video_width;
@@ -28,8 +29,8 @@ void NativeRender::InitRender(JNIEnv *env, int video_width, int video_height, in
         m_dst_h = windowHeight;
         m_dst_w = windowHeight * video_width / video_height;
     }
-    LOGE(TAG, "windowW: %d, windowH: %d, dstVideoW: %d, dstVideoH: %d",
-         windowWidth, windowHeight, m_dst_w, m_dst_h)
+    LOGI(TAG, "windowW: %d, windowH: %d, dstVideoW: %d, dstVideoH: %d, video_width:%d, video_height: %d",
+         windowWidth, windowHeight, m_dst_w, m_dst_h, video_width, video_height)
 
     //设置宽高限制缓冲区中的像素数量
     ANativeWindow_setBuffersGeometry(m_native_window, windowWidth,
@@ -47,6 +48,7 @@ void NativeRender::Render(OneFrame *one_frame) {
     int dstStride = m_out_buffer.stride * 4;
     int srcStride = one_frame->line_size;
 
+//    LOGI(TAG, "dstStride: %d srcStride: %d", dstStride/4, srcStride/4);
     // 由于window的stride和帧的stride不同，因此需要逐行复制
     for (int h = 0; h < m_dst_h; h++) {
         memcpy(dst + h * dstStride, one_frame->data + h * srcStride, srcStride);

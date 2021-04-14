@@ -26,7 +26,7 @@ public:
     bool autoRecycle = true;
 
     OneFrame(uint8_t *data, int line_size, int64_t pts, AVRational time_base,
-            uint8_t *ext_data = NULL, bool autoRecycle = true) {
+             uint8_t *ext_data = NULL, bool autoRecycle = true) {
         this->data = data;
         this->line_size = line_size;
         this->pts = pts;

@@ -28,5 +28,4 @@ public:
     void pause();
 };
 
-
 #endif //LEARNINGVIDEO_PLAYER_H

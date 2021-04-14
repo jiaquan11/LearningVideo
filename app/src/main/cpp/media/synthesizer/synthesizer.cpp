@@ -89,13 +89,6 @@ bool Synthesizer::DecodeOneFrame(IDecoder *decoder, OneFrame *frame) {
     }
 }
 
-void Synthesizer::ReceivePixel(uint8_t *rgba) {
-    OneFrame *rgbFrame = new OneFrame(rgba, m_cur_v_frame->line_size,
-                                      m_cur_v_frame->pts, m_cur_v_frame->time_base);
-    m_v_encoder->PushFrame(rgbFrame);
-    m_cur_v_frame = NULL;
-}
-
 void Synthesizer::DecodeFinish(IDecoder *decoder) {
     // 编码结束，压入一帧空数据，通知编码器结束编码
     if (decoder == m_video_decoder) {
@@ -106,6 +99,13 @@ void Synthesizer::DecodeFinish(IDecoder *decoder) {
 }
 
 void Synthesizer::DecodeStop(IDecoder *decoder) {
+}
+
+void Synthesizer::ReceivePixel(uint8_t *rgba) {
+    OneFrame *rgbFrame = new OneFrame(rgba, m_cur_v_frame->line_size,
+                                      m_cur_v_frame->pts, m_cur_v_frame->time_base);
+    m_v_encoder->PushFrame(rgbFrame);
+    m_cur_v_frame = NULL;
 }
 
 void Synthesizer::EncodeStart() {

@@ -21,7 +21,9 @@ void VideoDecoder::SetRender(VideoRender *render) {
 
 void VideoDecoder::Prepare(JNIEnv *env) {
     InitRender(env);
+
     InitBuffer();
+
     InitSws();
 }
 
@@ -30,13 +32,13 @@ void VideoDecoder::InitRender(JNIEnv *env) {
         int dst_size[2] = {-1, -1};
         m_video_render->InitRender(env, width(), height(), dst_size);
 
-        m_dst_w = dst_size[0];
+        m_dst_w = dst_size[0];//目标渲染尺寸
         m_dst_h = dst_size[1];
         if (m_dst_w == -1) {
-            m_dst_w = width();
+            m_dst_w = width();//视频宽
         }
         if (m_dst_h == -1) {
-            m_dst_w = height();
+            m_dst_w = height();//视频高
         }
         LOGI(TAG, "dst %d, %d", m_dst_w, m_dst_h)
     } else {

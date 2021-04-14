@@ -149,6 +149,8 @@ public:
         return m_duration;
     }
 
+    //////////////////////////////////////////
+    //重载IDecoder类的7个纯虚函数
     void GoOn() override;
 
     void Pause() override;
@@ -164,6 +166,7 @@ public:
     void SetStateReceiver(IDecodeStateCb *cb) override {
         m_state_cb = cb;
     }
+    /////////////////////////////////////////
 
     char *GetStateStr() {
         switch (m_state) {

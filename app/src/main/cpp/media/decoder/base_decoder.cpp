@@ -48,9 +48,13 @@ void BaseDecoder::Decode(std::shared_ptr<BaseDecoder> that) {
 
     that->InitFFMpegDecoder(env);
     that->AllocFrameBuffer();
+
     av_usleep(1000);
+
     that->Prepare(env);
+
     that->LoopDecode();
+
     that->DoneDecode(env);
 
     that->CallbackState(STOP);
@@ -318,6 +322,7 @@ void BaseDecoder::SendSignal() {
     pthread_mutex_unlock(&m_mutex);
 }
 
+//重载IDecoder类的7个纯虚函数
 void BaseDecoder::GoOn() {
     m_state = DECODING;
     SendSignal();

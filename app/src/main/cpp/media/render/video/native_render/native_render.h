@@ -37,6 +37,7 @@ private:
 public:
     NativeRender(JNIEnv *env, jobject surface);
     ~NativeRender();
+
     void InitRender(JNIEnv *env, int video_width, int video_height, int *dst_size) override ;
     void Render(OneFrame *one_frame) override ;
     void ReleaseRender() override ;

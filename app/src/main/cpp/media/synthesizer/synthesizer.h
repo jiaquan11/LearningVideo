@@ -44,6 +44,7 @@ public:
     void ReceivePixel(uint8_t *data) override ;
     void OnMuxFinished() override;
 
+    //重载IDecodeStateCb类的7个纯虚函数
     void DecodePrepare(IDecoder *decoder) override;
     void DecodeReady(IDecoder *decoder) override;
     void DecodeRunning(IDecoder *decoder) override;

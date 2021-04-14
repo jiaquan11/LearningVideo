@@ -4,6 +4,7 @@
 
 #include "sys/time.h"
 
+//获取系统时间
 int64_t GetCurMsTime() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
