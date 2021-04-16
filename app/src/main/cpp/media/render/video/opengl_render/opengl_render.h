@@ -96,4 +96,5 @@ public:
 
     void Stop();
 };
+
 #endif //LEARNVIDEO_OPENGL_RENDER_H

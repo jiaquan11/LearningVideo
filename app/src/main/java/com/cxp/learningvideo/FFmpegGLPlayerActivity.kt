@@ -9,7 +9,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_ff_gl_player.*
 import java.io.File
 
-
 /**
  * FFmpeg + OpenGL 播放器
  *
@@ -20,7 +19,7 @@ import java.io.File
  *
  */
 class FFmpegGLPlayerActivity : AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"//biterate9.mp4  demo_video.mp4
 
     private var player: Int? = null
 

@@ -163,6 +163,7 @@ void BaseDecoder::LoopDecode() {
             SyncRender();
             Render(m_frame);
 
+            //前面先渲染一帧，如果没有设置DECODING状态，即play,则进入暂停状态
             if (m_state == START) {
                 m_state = PAUSE;
             }
@@ -245,6 +246,7 @@ void BaseDecoder::CallbackState(DecodeState status) {
     }
 }
 
+//获取到当前帧的解码时间戳
 void BaseDecoder::ObtainTimeStamp() {
     if (m_frame->pkt_dts != AV_NOPTS_VALUE) {
         m_cur_t_s = m_packet->dts;
@@ -257,8 +259,9 @@ void BaseDecoder::ObtainTimeStamp() {
                            1000);
 }
 
+//根据系统时间戳进行音视频同步
 void BaseDecoder::SyncRender() {
-    if (ForSynthesizer()) {
+    if (ForSynthesizer()) {//音视频合成不需要同步，直接将音视频数据写入即可
 //        av_usleep(15000);
         return;
     }

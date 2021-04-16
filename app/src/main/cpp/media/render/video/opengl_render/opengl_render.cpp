@@ -14,11 +14,22 @@ OpenGLRender::OpenGLRender(JNIEnv *env, DrawerProxy *drawer_proxy) :
     this->m_env = env;
     //获取JVM虚拟机，为创建线程作准备
     env->GetJavaVM(&m_jvm_for_thread);
+
     InitRenderThread();
 }
 
 OpenGLRender::~OpenGLRender() {
     delete m_egl_surface;
+}
+
+void OpenGLRender::SetSurface(jobject surface) {
+    if (NULL != surface) {
+        m_surface_ref = m_env->NewGlobalRef(surface);
+        m_state = FRESH_SURFACE;
+    } else {
+        m_env->DeleteGlobalRef(m_surface_ref);
+        m_state = SURFACE_DESTROY;
+    }
 }
 
 void OpenGLRender::InitRenderThread() {
@@ -69,7 +80,7 @@ void OpenGLRender::sRenderThread(std::shared_ptr<OpenGLRender> that) {
             default:
                 break;
         }
-        usleep(20000);
+//        usleep(20000);
     }
 }
 
@@ -110,7 +121,7 @@ void OpenGLRender::Render() {
         m_drawer_proxy->Draw();
         m_egl_surface->SwapBuffers();
 
-        if (m_need_output_pixels && m_pixel_receiver != NULL) {//输出画面rgba
+        if (m_need_output_pixels && (m_pixel_receiver != NULL)) {//输出画面rgba
             m_need_output_pixels = false;
             Render(); //再次渲染最新的画面
 
@@ -153,16 +164,6 @@ void OpenGLRender::ReleaseDrawers() {
         m_drawer_proxy->Release();
         delete m_drawer_proxy;
         m_drawer_proxy = NULL;
-    }
-}
-
-void OpenGLRender::SetSurface(jobject surface) {
-    if (NULL != surface) {
-        m_surface_ref = m_env->NewGlobalRef(surface);
-        m_state = FRESH_SURFACE;
-    } else {
-        m_env->DeleteGlobalRef(m_surface_ref);
-        m_state = SURFACE_DESTROY;
     }
 }
 

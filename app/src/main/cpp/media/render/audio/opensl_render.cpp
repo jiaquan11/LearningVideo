@@ -26,7 +26,7 @@ void OpenSLRender::InitRender() {
 
 void OpenSLRender::Render(uint8_t *pcm, int size) {
     if (m_pcm_player) {
-        if (pcm != NULL && size > 0) {
+        if ((pcm != NULL) && (size > 0)) {
             while (m_data_queue.size() >= 2) {
                 SendCacheReadySignal();
                 usleep(20000);
@@ -81,6 +81,7 @@ void OpenSLRender::ReleaseRender() {
     }
 }
 
+//引擎
 bool OpenSLRender::CreateEngine() {
     SLresult result = slCreateEngine(&m_engine_obj, 0, NULL, 0, NULL, NULL);
     if (CheckError(result, "Engine")) return false;
@@ -92,6 +93,7 @@ bool OpenSLRender::CreateEngine() {
     return !CheckError(result, "Engine Interface");
 }
 
+//混音器
 bool OpenSLRender::CreateOutputMixer() {
     const SLInterfaceID mids[1] = {SL_IID_ENVIRONMENTALREVERB};
     const SLboolean mreq[1] = {SL_BOOLEAN_FALSE};
@@ -112,6 +114,7 @@ bool OpenSLRender::CreateOutputMixer() {
     return true;
 }
 
+//播放器
 bool OpenSLRender::ConfigPlayer() {
     //配置PCM格式信息
     SLDataLocator_AndroidSimpleBufferQueue android_queue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE,
@@ -181,7 +184,7 @@ void OpenSLRender::StartRender() {
         WaitForCache();
     }
     (*m_pcm_player)->SetPlayState(m_pcm_player, SL_PLAYSTATE_PLAYING);
-    sReadPcmBufferCbFun(m_pcm_buffer, this);
+    sReadPcmBufferCbFun(m_pcm_buffer, this);//启动缓存队列
     LOGI(TAG, "openSL render start playing")
 }
 
@@ -206,12 +209,12 @@ void OpenSLRender::BlockEnqueue() {
     }
 
     // 等待数据缓冲
-    while (m_data_queue.empty() && m_pcm_player != NULL) {// if m_pcm_player is NULL, stop render
+    while (m_data_queue.empty() && (m_pcm_player != NULL)) {// if m_pcm_player is NULL, stop render
         WaitForCache();
     }
 
     PcmData *pcmData = m_data_queue.front();
-    if (NULL != pcmData && m_pcm_player) {
+    if ((NULL != pcmData) && m_pcm_player) {
         SLresult result = (*m_pcm_buffer)->Enqueue(m_pcm_buffer, pcmData->pcm,
                                                    (SLuint32) pcmData->size);
         if (result == SL_RESULT_SUCCESS) {

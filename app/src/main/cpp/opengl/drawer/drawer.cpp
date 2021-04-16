@@ -6,9 +6,9 @@
 #include "drawer.h"
 #include "../../utils/logger.h"
 
-Drawer::Drawer(int origin_width, int origin_height):
-m_origin_width(origin_width),
-m_origin_height(origin_height) {
+Drawer::Drawer(int origin_width, int origin_height) :
+        m_origin_width(origin_width),
+        m_origin_height(origin_height) {
 }
 
 Drawer::~Drawer() {
@@ -31,7 +31,7 @@ void Drawer::Draw() {
 }
 
 bool Drawer::IsReadyToDraw() {
-    return m_origin_width > 0 && m_origin_height > 0;
+    return (m_origin_width > 0) && (m_origin_height > 0);
 }
 
 void Drawer::DoDraw() {
@@ -105,7 +105,7 @@ GLuint Drawer::LoadShader(GLenum type, const GLchar *shader_code) {
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
 
         if (infoLen > 1) {
-            GLchar* infoLog = (GLchar*) malloc(sizeof(GLchar) * infoLen);
+            GLchar *infoLog = (GLchar *) malloc(sizeof(GLchar) * infoLen);
 
             glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
             LOGI(TAG, "Error compiling shader:\n%s\n", infoLog);

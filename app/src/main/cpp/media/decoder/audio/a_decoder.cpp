@@ -7,7 +7,6 @@
 
 AudioDecoder::AudioDecoder(JNIEnv *env, const jstring path, bool forSynthesizer) : BaseDecoder(
         env, path, forSynthesizer) {
-
 }
 
 AudioDecoder::~AudioDecoder() {
@@ -22,8 +21,11 @@ void AudioDecoder::SetRender(AudioRender *render) {
 
 void AudioDecoder::Prepare(JNIEnv *env) {
     InitSwr();
+
     CalculateSampleArgs();
+
     InitOutBuffer();
+
     InitRender();
 }
 
@@ -58,6 +60,7 @@ void AudioDecoder::CalculateSampleArgs() {
     m_dest_data_size = (size_t) av_samples_get_buffer_size(
             NULL, ENCODE_AUDIO_DEST_CHANNEL_COUNTS,
             m_dest_nb_sample, GetSampleFmt(), 1);
+    LOGI(TAG, "m_dest_nb_sample: %d, m_dest_data_size: %d", m_dest_nb_sample, m_dest_data_size);
 }
 
 void AudioDecoder::InitOutBuffer() {
@@ -78,10 +81,10 @@ void AudioDecoder::InitRender() {
 };
 
 void AudioDecoder::Render(AVFrame *frame) {
-    InitOutBuffer();
+    //InitOutBuffer();
 
     // 转换，返回每个通道的样本数
-    int ret = swr_convert(m_swr, m_out_buffer, m_dest_data_size / 2,
+    int ret = swr_convert(m_swr, m_out_buffer, m_dest_data_size / 2,//输出单通道采样点数
                           (const uint8_t **) frame->data, frame->nb_samples);
 
     if (ret > 0) {

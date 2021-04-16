@@ -32,4 +32,5 @@ public:
 
     void Release();
 };
+
 #endif //LEARNINGVIDEO_GL_PLAYER_H

@@ -21,16 +21,15 @@ extern "C" {
 
 static const char *TAG = "OpenSLRender";
 
-class OpenSLRender: public AudioRender {
-
+class OpenSLRender : public AudioRender {
 private:
-
     class PcmData {
     public:
         PcmData(uint8_t *pcm, int size) {
             this->pcm = pcm;
             this->size = size;
         }
+
         ~PcmData() {
             if (pcm != NULL) {
                 //释放已使用的内存
@@ -39,6 +38,7 @@ private:
                 used = false;
             }
         }
+
         uint8_t *pcm = NULL;
         int size = 0;
         bool used = false;
@@ -70,14 +70,19 @@ private:
     pthread_cond_t m_cache_cond = PTHREAD_COND_INITIALIZER;
 
     bool CreateEngine();
+
     bool CreateOutputMixer();
+
     bool ConfigPlayer();
+
     void StartRender();
+
     void BlockEnqueue();
 
     bool CheckError(SLresult result, std::string hint);
 
     void static sRenderPcm(OpenSLRender *that);
+
     void static sReadPcmBufferCbFun(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *context);
 
     void WaitForCache() {
@@ -94,12 +99,13 @@ private:
 
 public:
     OpenSLRender();
+
     ~OpenSLRender();
 
     void InitRender() override;
+
     void Render(uint8_t *pcm, int size) override;
+
     void ReleaseRender() override;
 };
-
-
 #endif //LEARNVIDEO_AUDIOPLAYER_H

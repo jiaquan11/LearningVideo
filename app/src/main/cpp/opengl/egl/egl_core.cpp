@@ -23,15 +23,14 @@ bool EglCore::Init(EGLContext share_ctx) {
     }
 
     m_egl_dsp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    if (m_egl_dsp == EGL_NO_DISPLAY || eglGetError() != EGL_SUCCESS) {
+    if ((m_egl_dsp == EGL_NO_DISPLAY) || (eglGetError() != EGL_SUCCESS)) {
         LOGE(TAG, "EGL init display fail")
         return false;
     }
 
     EGLint major_ver, minor_ver;
     EGLBoolean success = eglInitialize(m_egl_dsp, &major_ver, &minor_ver);
-    if (success != EGL_TRUE || eglGetError() != EGL_SUCCESS) {
+    if ((success != EGL_TRUE) || (eglGetError() != EGL_SUCCESS)) {
         LOGE(TAG, "EGL init fail")
         return false;
     }
@@ -61,20 +60,20 @@ bool EglCore::Init(EGLContext share_ctx) {
 EGLConfig EglCore::GetEGLConfig() {
     EGLint numConfigs;
     EGLConfig config;
-    static const EGLint CONFIG_ATTRIBS[] = { EGL_BUFFER_SIZE, EGL_DONT_CARE,
-                                             EGL_RED_SIZE, 8,
-                                             EGL_GREEN_SIZE, 8,
-                                             EGL_BLUE_SIZE, 8,
-                                             EGL_ALPHA_SIZE, 8,
-                                             EGL_DEPTH_SIZE, 16,
-                                             EGL_STENCIL_SIZE, EGL_DONT_CARE,
-                                             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-                                             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                                             EGL_NONE // the end
+    static const EGLint CONFIG_ATTRIBS[] = {EGL_BUFFER_SIZE, EGL_DONT_CARE,
+                                            EGL_RED_SIZE, 8,
+                                            EGL_GREEN_SIZE, 8,
+                                            EGL_BLUE_SIZE, 8,
+                                            EGL_ALPHA_SIZE, 8,
+                                            EGL_DEPTH_SIZE, 16,
+                                            EGL_STENCIL_SIZE, EGL_DONT_CARE,
+                                            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+                                            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                                            EGL_NONE // the end
     };
 
     EGLBoolean success = eglChooseConfig(m_egl_dsp, CONFIG_ATTRIBS, &config, 1, &numConfigs);
-    if (!success || eglGetError() != EGL_SUCCESS) {
+    if (!success || (eglGetError() != EGL_SUCCESS)) {
         LOGE(TAG, "EGL config fail")
         return NULL;
     }

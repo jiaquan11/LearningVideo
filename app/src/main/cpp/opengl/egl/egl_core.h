@@ -31,6 +31,7 @@ private:
 
 public:
     EglCore();
+
     ~EglCore();
 
     bool Init(EGLContext share_ctx);

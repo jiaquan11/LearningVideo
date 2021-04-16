@@ -5,16 +5,17 @@
 #ifndef LEARNVIDEO_DRAWER_PROXY_H
 #define LEARNVIDEO_DRAWER_PROXY_H
 
-
 #include "../drawer.h"
 
 class DrawerProxy {
 public:
     virtual void AddDrawer(Drawer *drawer) = 0;
+
     virtual void Draw() = 0;
+
     virtual void Release() = 0;
+
     virtual ~DrawerProxy() {}
 };
-
 
 #endif //LEARNVIDEO_DRAWER_PROXY_H
