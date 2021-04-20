@@ -1,7 +1,6 @@
 //
 // Created by cxp on 2020-08-01.
 //
-
 #include <unistd.h>
 #include "ff_repack.h"
 #include "../../utils/logger.h"
@@ -112,7 +111,6 @@ void FFRepack::Start() {
 }
 
 void FFRepack::Write(AVPacket pkt) {
-
     // 获取数据对应的输入/输出流
     AVStream *in_stream = m_in_format_cxt->streams[pkt.stream_index];
     AVStream *out_stream = m_out_format_cxt->streams[pkt.stream_index];
@@ -120,16 +118,15 @@ void FFRepack::Write(AVPacket pkt) {
     // 转换时间基对应的 PTS/DTS
     int rounding = (AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
     pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base,
-                               (AVRounding)rounding);
+                               (AVRounding) rounding);
     pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base,
-                               (AVRounding)rounding);
+                               (AVRounding) rounding);
 
     pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
 
     pkt.pos = -1;
 
     // 将数据写入目标文件
-
     int ret = av_interleaved_write_frame(m_out_format_cxt, &pkt);
     if (ret < 0) {
         LOGE(TAG, "Error to muxing packet: %x", ret)

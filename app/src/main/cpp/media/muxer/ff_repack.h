@@ -1,12 +1,11 @@
 //
 // Created by cxp on 2020-08-01.
 //
-
 #ifndef LEARNINGVIDEO_FF_REPACK_H
 #define LEARNINGVIDEO_FF_REPACK_H
 
-
 #include <jni.h>
+
 extern "C" {
 #include <libavformat/avformat.h>
 };
@@ -24,7 +23,7 @@ private:
     int InitMuxerParams(const char *destPath);
 
 public:
-    FFRepack(JNIEnv *env,jstring in_path, jstring out_path);
+    FFRepack(JNIEnv *env, jstring in_path, jstring out_path);
 
     void Start();
 
@@ -32,6 +31,4 @@ public:
 
     void Release();
 };
-
-
 #endif //LEARNINGVIDEO_FF_REPACK_H

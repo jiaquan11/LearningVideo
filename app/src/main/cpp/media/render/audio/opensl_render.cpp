@@ -27,7 +27,7 @@ void OpenSLRender::InitRender() {
 void OpenSLRender::Render(uint8_t *pcm, int size) {
     if (m_pcm_player) {
         if ((pcm != NULL) && (size > 0)) {
-            while (m_data_queue.size() >= 2) {
+            while (m_data_queue.size() >= 2) {//播放数据消耗过慢，先延迟等待一下
                 SendCacheReadySignal();
                 usleep(20000);
             }

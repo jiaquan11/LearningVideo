@@ -121,6 +121,7 @@ void OpenGLRender::Render() {
         m_drawer_proxy->Draw();
         m_egl_surface->SwapBuffers();
 
+        //用于获取一帧rgb图像数据
         if (m_need_output_pixels && (m_pixel_receiver != NULL)) {//输出画面rgba
             m_need_output_pixels = false;
             Render(); //再次渲染最新的画面

@@ -160,8 +160,8 @@ void BaseDecoder::LoopDecode() {
         }
 
         if (DecodeOneFrame() != NULL) {
-            SyncRender();
-            Render(m_frame);
+            SyncRender();//音视频解码时间戳与系统时间戳同步
+            Render(m_frame);//音视频渲染
 
             //前面先渲染一帧，如果没有设置DECODING状态，即play,则进入暂停状态
             if (m_state == START) {
@@ -179,6 +179,7 @@ void BaseDecoder::LoopDecode() {
     }
 }
 
+//解封装和解码顺序执行，代码有优化空间
 AVFrame *BaseDecoder::DecodeOneFrame() {
     int ret = av_read_frame(m_format_ctx, m_packet);
     while (ret == 0) {
@@ -204,14 +205,16 @@ AVFrame *BaseDecoder::DecodeOneFrame() {
             //TODO 这里需要考虑一个packet有可能包含多个frame的情况
             int result = avcodec_receive_frame(m_codec_ctx, m_frame);
             if (result == 0) {
-                ObtainTimeStamp();
+                ObtainTimeStamp();//获取当前解码时间戳
                 av_packet_unref(m_packet);
-                return m_frame;
+                return m_frame;//有解码数据立即返回当前解码帧
             } else {
                 LOG_INFO(TAG, LogSpec(), "Receive frame error result: %s",
                          av_err2str(AVERROR(result)))
             }
         }
+
+        //没有获取到有效的解码数据，继续进行解封装packet读取
         // 释放packet
         av_packet_unref(m_packet);
         ret = av_read_frame(m_format_ctx, m_packet);
@@ -265,9 +268,9 @@ void BaseDecoder::SyncRender() {
 //        av_usleep(15000);
         return;
     }
-    int64_t ct = GetCurMsTime();
+    int64_t ct = GetCurMsTime();//获取系统时间戳
     int64_t passTime = ct - m_started_t;
-    if (m_cur_t_s > passTime) {
+    if (m_cur_t_s > passTime) {//如果视频解码时间戳比系统时间戳快，则进行延时
         av_usleep((unsigned int) ((m_cur_t_s - passTime) * 1000));
     }
 }

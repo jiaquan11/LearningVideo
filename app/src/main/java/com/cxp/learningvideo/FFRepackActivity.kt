@@ -18,7 +18,8 @@ import kotlin.concurrent.thread
 class FFRepackActivity : AppCompatActivity() {
     private var ffRepack: Int = 0
 
-    private val srcPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+    private val srcPath =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"
     private val destPath =
         Environment.getExternalStorageDirectory().absolutePath + "/mvtest_repack.mp4"
 
