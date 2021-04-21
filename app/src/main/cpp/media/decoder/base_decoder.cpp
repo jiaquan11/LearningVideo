@@ -165,6 +165,7 @@ void BaseDecoder::LoopDecode() {
 
             //前面先渲染一帧，如果没有设置DECODING状态，即play,则进入暂停状态
             if (m_state == START) {
+                LOG_INFO(TAG, LogSpec(), "LoopDecode m_state=PAUSE");
                 m_state = PAUSE;
             }
         } else {
@@ -183,10 +184,12 @@ void BaseDecoder::LoopDecode() {
 AVFrame *BaseDecoder::DecodeOneFrame() {
     int ret = av_read_frame(m_format_ctx, m_packet);
     while (ret == 0) {
+        LOG_INFO(TAG, LogSpec(), "aaaa");
         if (m_packet->stream_index == m_stream_index) {
             switch (avcodec_send_packet(m_codec_ctx, m_packet)) {
                 case AVERROR_EOF: {
                     av_packet_unref(m_packet);
+                    LOG_ERROR(TAG, LogSpec(), "1111111111");
                     LOG_ERROR(TAG, LogSpec(), "Decode error: %s", av_err2str(AVERROR_EOF));
                     return NULL; //解码结束
                 }
@@ -207,9 +210,11 @@ AVFrame *BaseDecoder::DecodeOneFrame() {
             if (result == 0) {
                 ObtainTimeStamp();//获取当前解码时间戳
                 av_packet_unref(m_packet);
+                LOG_INFO(TAG, LogSpec(), "bbbbb");
                 return m_frame;//有解码数据立即返回当前解码帧
             } else {
-                LOG_INFO(TAG, LogSpec(), "Receive frame error result: %s",
+                LOG_ERROR(TAG, LogSpec(), "22222222222222 result: %d", result);
+                LOG_ERROR(TAG, LogSpec(), "Receive frame error result: %s",
                          av_err2str(AVERROR(result)))
             }
         }
@@ -218,6 +223,7 @@ AVFrame *BaseDecoder::DecodeOneFrame() {
         // 释放packet
         av_packet_unref(m_packet);
         ret = av_read_frame(m_format_ctx, m_packet);
+        LOG_INFO(TAG, LogSpec(), "ccccc");
     }
     av_packet_unref(m_packet);
     LOGI(TAG, "ret = %s", av_err2str(AVERROR(ret)))

@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.activity_ff_repack.*
 class FFEncodeActivity : AppCompatActivity() {
     private var ffEncoder: Int = -1
 
-    private val srcPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest2.mp4"
+    private val srcPath =
+        Environment.getExternalStorageDirectory().absolutePath + "/testziliao/demo_video.mp4"  //biterate9.mp4  demo_video.mp4  chuqiaozhuan1.mp4
     private val destPath =
         Environment.getExternalStorageDirectory().absolutePath + "/mvtest_en_out.mp4"
 

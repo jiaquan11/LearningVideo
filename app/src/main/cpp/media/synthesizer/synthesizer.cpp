@@ -7,9 +7,10 @@
 #include "synthesizer.h"
 #include "../../opengl/drawer/proxy/def_drawer_proxy_impl.h"
 #include "../../opengl/drawer/video_drawer.h"
+#include "../../utils/logger.h"
 
-static int WIDTH = 1920;
-static int HEIGHT = 1080;
+static int WIDTH = 720;
+static int HEIGHT = 1280;
 
 Synthesizer::Synthesizer(JNIEnv *env, jstring src_path, jstring dst_path) {
     // 封装器
@@ -76,11 +77,14 @@ void Synthesizer::DecodePause(IDecoder *decoder) {
 
 bool Synthesizer::DecodeOneFrame(IDecoder *decoder, OneFrame *frame) {
     if (decoder == m_video_decoder) {
+        LOGI(TAG, "DecodeOneFrame 111");
         while (m_cur_v_frame) {
+            LOGI(TAG, "DecodeOneFrame 222");
             av_usleep(2000);
         }
         m_cur_v_frame = frame;
         m_gl_render->RequestRgbaData();
+        LOGI(TAG, "DecodeOneFrame 333");
         return m_v_encoder->TooMuchData();
     } else {
         m_cur_a_frame = frame;

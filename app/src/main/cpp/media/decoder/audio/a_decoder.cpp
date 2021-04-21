@@ -81,7 +81,7 @@ void AudioDecoder::InitRender() {
 };
 
 void AudioDecoder::Render(AVFrame *frame) {
-    //InitOutBuffer();
+//    InitOutBuffer();
 
     // 转换，返回每个通道的样本数
     int ret = swr_convert(m_swr, m_out_buffer, m_dest_data_size / 2,//输出单通道采样点数

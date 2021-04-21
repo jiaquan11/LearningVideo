@@ -65,15 +65,19 @@ void VideoDecoder::InitSws() {
 }
 
 void VideoDecoder::Render(AVFrame *frame) {
+    LOGI(TAG, "VideoDecoder Render 111");
     sws_scale(m_sws_ctx, frame->data, frame->linesize, 0,
               height(), m_rgb_frame->data, m_rgb_frame->linesize);//YUV转RGBA
+    LOGI(TAG, "VideoDecoder Render 222");
     OneFrame *one_frame = new OneFrame(m_rgb_frame->data[0], m_rgb_frame->linesize[0], frame->pts,
                                        time_base(), NULL, false);
     m_video_render->Render(one_frame);
-
+    LOGI(TAG, "VideoDecoder Render 333");
     if (m_state_cb != NULL) {
+        LOGI(TAG, "VideoDecoder Render 444");
         if (m_state_cb->DecodeOneFrame(this, one_frame)) {
             Wait(0, 200);
+            LOGI(TAG, "VideoDecoder Render 5555");
         }
     }
 }

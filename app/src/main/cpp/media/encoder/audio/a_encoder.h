@@ -7,16 +7,16 @@
 #ifndef LEARNVIDEO_AUDIO_ENCODER_H
 #define LEARNVIDEO_AUDIO_ENCODER_H
 
-
 #include "../base_encoder.h"
 
 extern "C" {
 #include <libswresample/swresample.h>
 };
 
-class AudioEncoder: public BaseEncoder {
-
+class AudioEncoder : public BaseEncoder {
 private:
+    const char *TAG = "AudioEncoder";
+
     AVFrame *m_frame = NULL;
 
     void InitFrame();
@@ -26,17 +26,15 @@ protected:
 
     int ConfigureMuxerStream(Mp4Muxer *muxer, AVCodecContext *ctx) override;
 
-    AVFrame* DealFrame(OneFrame *one_frame) override;
+    AVFrame *DealFrame(OneFrame *one_frame) override;
 
     void Release() override;
 
     const char *const LogSpec() override {
-        return "音频";
+        return "Audio";
     };
 
 public:
     AudioEncoder(JNIEnv *env, Mp4Muxer *muxer);
 };
-
-
 #endif //LEARNVIDEO_AUDIO_ENCODER_H

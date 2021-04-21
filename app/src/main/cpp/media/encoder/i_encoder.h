@@ -11,7 +11,10 @@
 class IEncoder {
 public:
     virtual void PushFrame(OneFrame *one_frame) = 0;
+
     virtual bool TooMuchData() = 0;
+
     virtual void SetStateReceiver(IEncodeStateCb *cb) = 0;
 };
+
 #endif //LEARNVIDEO_I_ENCODER_H

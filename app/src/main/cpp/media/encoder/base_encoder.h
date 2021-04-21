@@ -5,7 +5,6 @@
 #ifndef LEARNVIDEO_BASE_ENCODER_H
 #define LEARNVIDEO_BASE_ENCODER_H
 
-
 #include "i_encoder.h"
 #include <thread>
 #include <mutex>
@@ -22,10 +21,9 @@ extern "C" {
 #include <libavutil/frame.h>
 };
 
-class BaseEncoder: public IEncoder {
+class BaseEncoder : public IEncoder {
 private:
-
-    const char * TAG = "BaseEncoder";
+    const char *TAG = "BaseEncoder";
 
     // 编码格式 ID
     AVCodecID m_codec_id;
@@ -107,14 +105,13 @@ private:
     }
 
 protected:
-
     Mp4Muxer *m_muxer = NULL;
 
     virtual void InitContext(AVCodecContext *codec_ctx) = 0;
 
     virtual int ConfigureMuxerStream(Mp4Muxer *muxer, AVCodecContext *ctx) = 0;
 
-    virtual AVFrame* DealFrame(OneFrame *one_frame) = 0;
+    virtual AVFrame *DealFrame(OneFrame *one_frame) = 0;
 
     virtual void Release() = 0;
 
@@ -126,7 +123,7 @@ protected:
 public:
     BaseEncoder(JNIEnv *env, Mp4Muxer *muxer, AVCodecID codec_id);
 
-    void PushFrame(OneFrame *one_frame) override ;
+    void PushFrame(OneFrame *one_frame) override;
 
     bool TooMuchData() override {
         return m_src_frames.size() > 100;
@@ -136,6 +133,4 @@ public:
         this->m_state_cb = cb;
     }
 };
-
-
 #endif //LEARNVIDEO_BASE_ENCODER_H

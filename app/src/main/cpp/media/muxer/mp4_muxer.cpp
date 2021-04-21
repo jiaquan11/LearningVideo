@@ -43,10 +43,10 @@ int Mp4Muxer::AddAudioStream(AVCodecContext *ctx) {
 }
 
 int Mp4Muxer::AddStream(AVCodecContext *ctx) {
-    AVStream *video_stream = avformat_new_stream(m_fmt_ctx, NULL);
-    avcodec_parameters_from_context(video_stream->codecpar, ctx);
-    video_stream->codecpar->codec_tag = 0;
-    return video_stream->index;
+    AVStream *stream = avformat_new_stream(m_fmt_ctx, NULL);
+    avcodec_parameters_from_context(stream->codecpar, ctx);
+    stream->codecpar->codec_tag = 0;
+    return stream->index;
 }
 
 void Mp4Muxer::Start() {
@@ -73,7 +73,9 @@ void Mp4Muxer::Start() {
 
 void Mp4Muxer::Write(AVPacket *pkt) {
 //    uint64_t time = uint64_t (pkt->pts*av_q2d(GetTimeBase(pkt->stream_index))*1000);
+
     int ret = av_interleaved_write_frame(m_fmt_ctx, pkt);
+
 //    LOGE(TAG, "Write one frame pts: %lld, ret = %s", time , av_err2str(ret))
 }
 
@@ -103,7 +105,7 @@ void Mp4Muxer::Release() {
 
             m_fmt_ctx = NULL;
         }
-        delete [] m_path;
+        delete[] m_path;
         LOGI(TAG, "Muxer Release")
         if (m_mux_finish_cb) {
             m_mux_finish_cb->OnMuxFinished();

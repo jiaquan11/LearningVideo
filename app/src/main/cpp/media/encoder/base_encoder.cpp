@@ -6,10 +6,11 @@
 #include "base_encoder.h"
 
 BaseEncoder::BaseEncoder(JNIEnv *env, Mp4Muxer *muxer, AVCodecID codec_id)
-: m_muxer(muxer),
-m_codec_id(codec_id) {
+        : m_muxer(muxer),
+          m_codec_id(codec_id) {
     if (Init()) {
         env->GetJavaVM(&m_jvm_for_thread);
+
         CreateEncodeThread();
     }
 }
@@ -41,10 +42,8 @@ void BaseEncoder::CreateEncodeThread() {
 
 static int encode_count = 0;
 static int encode_in_count = 0;
-
 void BaseEncoder::Encode(std::shared_ptr<BaseEncoder> that) {
-    JNIEnv * env;
-
+    JNIEnv *env;
     //将线程附加到虚拟机，并获取env
     if (that->m_jvm_for_thread->AttachCurrentThread(&env, NULL) != JNI_OK) {
         LOG_ERROR(that->TAG, that->LogSpec(), "Fail to Init encode thread");
@@ -56,7 +55,6 @@ void BaseEncoder::Encode(std::shared_ptr<BaseEncoder> that) {
     that->DoRelease();
     //解除线程和jvm关联
     that->m_jvm_for_thread->DetachCurrentThread();
-
 }
 
 void BaseEncoder::OpenEncoder() {
@@ -68,7 +66,7 @@ void BaseEncoder::OpenEncoder() {
         return;
     }
 
-    m_encode_stream_index = ConfigureMuxerStream(m_muxer, m_codec_ctx);
+    m_encode_stream_index = ConfigureMuxerStream(m_muxer, m_codec_ctx);//返回相对应的流索引
 }
 
 void BaseEncoder::LoopEncode() {
@@ -112,7 +110,8 @@ void BaseEncoder::LoopEncode() {
                     break;
                 case AVERROR(EAGAIN): //编码编码器已满，先取出已编码数据，再尝试发送数据
                     while (ret == AVERROR(EAGAIN)) {
-                        LOG_ERROR(TAG, LogSpec(), "Send frame error[EAGAIN]: %s", av_err2str(AVERROR(EAGAIN)));
+                        LOG_ERROR(TAG, LogSpec(), "Send frame error[EAGAIN]: %s",
+                                  av_err2str(AVERROR(EAGAIN)));
                         // 4. 将编码好的数据榨干
                         if (DrainEncode()) return; //编码结束
                         // 5. 重新发送数据
@@ -120,10 +119,12 @@ void BaseEncoder::LoopEncode() {
                     }
                     break;
                 case AVERROR(EINVAL):
-                    LOG_ERROR(TAG, LogSpec(), "Send frame error[EINVAL]: %s", av_err2str(AVERROR(EINVAL)));
+                    LOG_ERROR(TAG, LogSpec(), "Send frame error[EINVAL]: %s",
+                              av_err2str(AVERROR(EINVAL)));
                     break;
                 case AVERROR(ENOMEM):
-                    LOG_ERROR(TAG, LogSpec(), "Send frame error[ENOMEM]: %s", av_err2str(AVERROR(ENOMEM)));
+                    LOG_ERROR(TAG, LogSpec(), "Send frame error[ENOMEM]: %s",
+                              av_err2str(AVERROR(ENOMEM)));
                     break;
                 default:
 //                    LOGE(TAG, "Send frame to encode, pts: %lld",
@@ -155,7 +156,7 @@ int BaseEncoder::EncodeOneFrame() {
             LOG_INFO(TAG, LogSpec(), "Encode error[EAGAIN]: %s", av_err2str(AVERROR(EAGAIN)));
             break;
         case AVERROR(EINVAL):
-            LOG_ERROR(TAG, LogSpec(),  "Encode error[EINVAL]: %s", av_err2str(AVERROR(EINVAL)));
+            LOG_ERROR(TAG, LogSpec(), "Encode error[EINVAL]: %s", av_err2str(AVERROR(EINVAL)));
             break;
         case AVERROR(ENOMEM):
             LOG_ERROR(TAG, LogSpec(), "Encode error[ENOMEM]: %s", av_err2str(AVERROR(ENOMEM)));
@@ -171,7 +172,8 @@ int BaseEncoder::EncodeOneFrame() {
                                  m_muxer->GetTimeBase(m_encode_stream_index));
             if (m_state_cb != NULL) {
                 m_state_cb->EncodeFrame(m_encoded_pkt->data);
-                long cur_time = (long)(m_encoded_pkt->pts*av_q2d(m_muxer->GetTimeBase(m_encode_stream_index))*1000);
+                long cur_time = (long) (m_encoded_pkt->pts *
+                                        av_q2d(m_muxer->GetTimeBase(m_encode_stream_index)) * 1000);
                 m_state_cb->EncodeProgress(cur_time);
             }
             m_encoded_pkt->stream_index = m_encode_stream_index;
@@ -208,5 +210,5 @@ void BaseEncoder::DoRelease() {
     if (m_state_cb != NULL) {
         m_state_cb->EncodeFinish();
     }
-    LOGE("cccccc", "all encode count : %d,  %d", encode_in_count, encode_count)
+    LOGE(TAG, "all encode count : %d,  %d", encode_in_count, encode_count)
 }

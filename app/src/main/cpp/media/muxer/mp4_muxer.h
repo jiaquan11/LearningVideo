@@ -18,12 +18,11 @@ typedef void (*mux_finish_cb)();
 
 class Mp4Muxer {
 private:
-
     const char *TAG = "Mp4Muxer";
 
     char *m_path;
 
-    AVFormatContext * m_fmt_ctx = NULL;
+    AVFormatContext *m_fmt_ctx = NULL;
 
     bool m_audio_configured = false;
 
@@ -53,6 +52,7 @@ public:
     void Init(JNIEnv *env, jstring path);
 
     int AddVideoStream(AVCodecContext *ctx);
+
     int AddAudioStream(AVCodecContext *ctx);
 
     void Start();
@@ -65,6 +65,4 @@ public:
 
     void Release();
 };
-
-
 #endif //LEARNVIDEO_MP4_MUXER_H

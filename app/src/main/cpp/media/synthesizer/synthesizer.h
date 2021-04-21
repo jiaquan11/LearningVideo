@@ -16,8 +16,10 @@
 #include "../encoder/video/v_encoder.h"
 #include "../decoder/i_decode_state_cb.h"
 
-class Synthesizer: IMuxerCb, IDecodeStateCb, IEncodeStateCb, OpenGLPixelReceiver {
+class Synthesizer : IMuxerCb, IDecodeStateCb, IEncodeStateCb, OpenGLPixelReceiver {
 private:
+    const char *TAG = "Synthesizer";
+
     VideoDecoder *m_video_decoder = NULL;
 
     AudioDecoder *m_audio_decoder = NULL;
@@ -37,20 +39,28 @@ private:
 
 public:
     Synthesizer(JNIEnv *env, jstring src_path, jstring dst_path);
+
     ~Synthesizer();
 
     void Start();
 
-    void ReceivePixel(uint8_t *data) override ;
+    void ReceivePixel(uint8_t *data) override;
+
     void OnMuxFinished() override;
 
     //重载IDecodeStateCb类的7个纯虚函数
     void DecodePrepare(IDecoder *decoder) override;
+
     void DecodeReady(IDecoder *decoder) override;
+
     void DecodeRunning(IDecoder *decoder) override;
+
     void DecodePause(IDecoder *decoder) override;
+
     bool DecodeOneFrame(IDecoder *decoder, OneFrame *frame) override;
+
     void DecodeFinish(IDecoder *decoder) override;
+
     void DecodeStop(IDecoder *decoder) override;
 
     void EncodeStart() override;
@@ -58,7 +68,10 @@ public:
     void EncodeSend() override;
 
     void EncodeFrame(void *data) override;
+
     void EncodeProgress(long time) override;
+
     void EncodeFinish() override;
 };
+
 #endif //LEARNVIDEO_OPENGL_SYNTHESIZER_H

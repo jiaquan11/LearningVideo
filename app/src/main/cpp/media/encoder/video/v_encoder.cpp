@@ -8,17 +8,16 @@
 #include "../../const.h"
 
 VideoEncoder::VideoEncoder(JNIEnv *env, Mp4Muxer *muxer, int width, int height)
-: BaseEncoder(env, muxer, AV_CODEC_ID_H264),
-m_width(width),
-m_height(height) {
+        : BaseEncoder(env, muxer, AV_CODEC_ID_H264),
+          m_width(width),
+          m_height(height) {
     m_sws_ctx = sws_getContext(width, height, AV_PIX_FMT_RGBA,
                                width, height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR,
                                NULL, NULL, NULL);
 }
 
 void VideoEncoder::InitContext(AVCodecContext *codec_ctx) {
-
-    codec_ctx->bit_rate = 3*m_width*m_height;
+    codec_ctx->bit_rate = 3 * m_width * m_height;
 
     codec_ctx->width = m_width;
     codec_ctx->height = m_height;
@@ -70,16 +69,16 @@ int VideoEncoder::ConfigureMuxerStream(Mp4Muxer *muxer, AVCodecContext *ctx) {
     return muxer->AddVideoStream(ctx);
 }
 
-AVFrame* VideoEncoder::DealFrame(OneFrame *one_frame) {
-    uint8_t *in_data[AV_NUM_DATA_POINTERS] = { 0 };
+AVFrame *VideoEncoder::DealFrame(OneFrame *one_frame) {
+    uint8_t *in_data[AV_NUM_DATA_POINTERS] = {0};
     in_data[0] = one_frame->data;
-    int src_line_size[AV_NUM_DATA_POINTERS] = { 0 };
+    int src_line_size[AV_NUM_DATA_POINTERS] = {0};
     src_line_size[0] = one_frame->line_size;
 
     int h = sws_scale(m_sws_ctx, in_data, src_line_size, 0, m_height,
                       m_yuv_frame->data, m_yuv_frame->linesize);
     if (h <= 0) {
-        LOGE(TAG, "转码出错");
+        LOGE(TAG, "sws_scale出错");
         return NULL;
     }
 
